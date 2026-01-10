@@ -1,0 +1,20 @@
+Backend/venv/
+Backend/**/__pycache__/
+Backend/*.pyc
+Backend/db.sqlite3
+Backend/.env
+Backend/*.log
+Backend/media/
+Backend/staticfiles/
+# General
+.DS_Store
+.vscode/
+.idea/
+*.log
+# Android (adicional)
+APPMOBILE/.idea/
+APPMOBILE/.gradle/
+APPMOBILE/build/
+APPMOBILE/local.properties
+APPMOBILE/*.apk
+APPMOBILE/*.aab
