@@ -6,7 +6,7 @@ class User(models.Model):
     email = models.CharField(max_length=120, unique= True)
     password_hash = models.TextField()
     role = models.CharField(max_length=20, null=True, blank=True)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'users'
