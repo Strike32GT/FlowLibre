@@ -9,10 +9,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil3.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -23,92 +27,171 @@ import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 @Composable
 fun Home(
     viewModel: HomeViewModel = viewModel(),
-    onSongClick: (Song) -> Unit = {}
 ) {
+    val context = LocalContext.current
     val songs by viewModel.songs.collectAsState()
+    val currentSong by viewModel.currentSong.collectAsState()
+    var isPlayerVisible by remember {mutableStateOf(false)}
+    var isPlaying by remember {mutableStateOf(false)}
 
-    LazyColumn(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0B0B0E))
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ){
-        item {
-            Spacer(modifier = Modifier.height(18.dp))
-            Header()
-        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF0B0B0E))
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ){
+            item {
+                Spacer(modifier = Modifier.height(18.dp))
+                Header()
+            }
 
-        item {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Filled.Star,
-                    contentDescription = null,
-                    tint = Color(0xFF6FE4FF),
-                    modifier = Modifier.size(18.dp)
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = "Recomendado para ti",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
+            item {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = null,
+                        tint = Color(0xFF6FE4FF),
+                        modifier = Modifier.size(18.dp)
                     )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "Recomendado para ti",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
+                    )
+                }
+            }
+
+            item {
+                RecommendedGrid(
+                    songs = songs,
+                    onSongClick = { song ->
+                        viewModel.playSong(context, song)
+                        isPlayerVisible = true
+                        isPlaying = true
+                    }
                 )
+            }
+
+
+            item {
+                SectionTitle(
+                    icon = Icons.Default.ShowChart,
+                    title = "Tendencias"
+                )
+            }
+
+            items(songs.take(4)) { song ->
+                PopularItem(
+                    song = song,
+                    onClick = {
+                        viewModel.playSong(context,song)
+                        isPlayerVisible = true
+                        isPlaying = true
+                    }
+                )
+            }
+
+            item {
+                SectionHeaderWithAction(
+                    title = "Nuevos Lanzamientos",
+                    onClickMore = {
+                        //
+                    }
+                )
+            }
+
+            item {
+                NewReleaseCarousel(
+                    songs = songs,
+                    onSongClick = {
+                            song -> viewModel.playSong(context,song)
+                        isPlayerVisible = true
+                        isPlaying = true
+                    }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
 
-        item {
-            RecommendedGrid(
-                songs = songs,
-                onSongClick = onSongClick
-            )
-        }
+        if(isPlayerVisible && currentSong != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ){
+                val song = currentSong!!
+                Card(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF15151B))
+                ) {
+                    Row (
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        AsyncImage(
+                            model = "http://ip:8000${song.coverUrl}", // ip del celular
+                            contentDescription = song.title,
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                        )
 
-        item {
-            SectionTitle(
-                icon = Icons.Filled.ShowChart,
-                title = "Tendencias"
-            )
-        }
+                        Spacer(modifier = Modifier.width(12.dp))
 
-        items(songs) { song ->
-            TrendItem(song = song)
-        }
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ){
+                            Text(song.title, color = Color.White)
+                            Text(song.artistName, color = Color.Gray)
 
-        item {
-            SectionTitle(title = "Popular Ahora")
-        }
+                            LinearProgressIndicator(
+                                progress = { 0.3f },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(4.dp)
+                            )
+                        }
 
-        items(songs) { song ->
-            PopularItem(song = song)
-        }
-
-        item {
-            SectionHeaderWithAction(
-                title = "Nuevos Lanzamientos",
-                onClickMore = {
-                    //
+                        IconButton(
+                            onClick = {
+                                if (isPlaying) {
+                                    viewModel.pauseSong()
+                                    isPlaying = false
+                                } else {
+                                    viewModel.resumeSong()
+                                    isPlaying = true
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp),
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
-            )
+            }
         }
-
-        item {
-            NewReleaseCarousel(
-                songs = songs,
-                onSongClick = onSongClick
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-
     }
 }
 
@@ -203,12 +286,15 @@ fun RecommendedCard(
         Column(
             modifier = Modifier.padding(10.dp)
         ) {
-            Box(
+
+            AsyncImage(
+                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                contentDescription = song.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.25f)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color.DarkGray)
+                    .clip(RoundedCornerShape(14.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -242,21 +328,24 @@ fun RecommendedCard(
 
 
 @Composable
-fun TrendItem(song: Song) {
+fun TrendItem(song: Song, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF15151B)),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
     ){
         Row(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Box(
+            AsyncImage(
+                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                contentDescription = song.title,
                 modifier = Modifier
                     .size(54.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color.DarkGray)
+                    .clip(RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -280,20 +369,23 @@ fun TrendItem(song: Song) {
 
 
 @Composable
-fun PopularItem(song: Song) {
+fun PopularItem(song: Song, onClick: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(Color(0xFF15151B)),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
     ){
         Row(
             modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Box(
+            AsyncImage(
+                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                contentDescription = song.title,
                 modifier = Modifier
                     .size(54.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color.DarkGray)
+                    .clip(RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -382,12 +474,14 @@ fun NewReleaseCard(
         Column(
             modifier = Modifier.padding(10.dp)
         ){
-            Box(
+            AsyncImage(
+                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                contentDescription = song.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.DarkGray)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -411,3 +505,5 @@ fun NewReleaseCard(
         }
     }
 }
+
+
