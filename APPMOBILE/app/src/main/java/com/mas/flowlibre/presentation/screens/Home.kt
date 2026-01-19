@@ -2,6 +2,7 @@ package com.mas.flowlibre.presentation.screens
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +34,7 @@ fun Home(
     val currentSong by viewModel.currentSong.collectAsState()
     var isPlayerVisible by remember {mutableStateOf(false)}
     var isPlaying by remember {mutableStateOf(false)}
+    var isPlayedExpanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -139,7 +141,8 @@ fun Home(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(16.dp)
+                        .clickable {isPlayedExpanded = true},
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF15151B))
                 ) {
                     Row (
@@ -186,6 +189,113 @@ fun Home(
                                 contentDescription = null,
                                 modifier = Modifier.size(32.dp),
                                 tint = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+
+        if (isPlayedExpanded && currentSong != null){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.9f))
+                    .clickable {isPlayedExpanded = false}
+            ) {
+                val songs = currentSong!!
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    AsyncImage(
+                        model = "http://ip:8000${songs.coverUrl}",
+                        contentDescription = songs.title,
+                        modifier = Modifier
+                            .size(300.dp)
+                            .clip(RoundedCornerShape(20.dp))
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Text(
+                        text = songs.title,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = songs.artistName,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.Gray
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    LinearProgressIndicator(
+                        progress = {0.3f},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(6.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ){
+                        Text("0:45", color = Color.Gray)
+                        Text("3:20", color = Color.Gray)
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        IconButton(onClick = {/**/}) {
+                            Icon(
+                                imageVector = Icons.Default.SkipPrevious,
+                                contentDescription = "Anterior",
+                                tint = Color.White,
+                                modifier = Modifier.size(48.dp)
+                            )
+                        }
+
+                        IconButton(
+                            onClick = {
+                                if (isPlaying) {
+                                    viewModel.pauseSong()
+                                    isPlaying = false
+                                } else {
+                                    viewModel.resumeSong()
+                                    isPlaying = true
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if(isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(64.dp)
+                            )
+                        }
+
+                        IconButton( onClick = {/**/}) {
+                            Icon(
+                                imageVector = Icons.Default.SkipNext,
+                                contentDescription = "Siguiente",
+                                tint = Color.White,
+                                modifier = Modifier.size(48.dp)
                             )
                         }
                     }
