@@ -21,9 +21,11 @@ import coil3.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mas.flowlibre.domain.model.Song
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun Home(
@@ -35,6 +37,10 @@ fun Home(
     var isPlayerVisible by remember {mutableStateOf(false)}
     var isPlaying by remember {mutableStateOf(false)}
     var isPlayedExpanded by remember { mutableStateOf(false) }
+    val currentPosition by viewModel.currentPosition.collectAsState()
+    val duration by viewModel.duration.collectAsState()
+    val isDragging by viewModel.isDragging.collectAsState()
+
 
     Box(
         modifier = Modifier
@@ -166,7 +172,7 @@ fun Home(
                             Text(song.artistName, color = Color.Gray)
 
                             LinearProgressIndicator(
-                                progress = { 0.3f },
+                                progress = { if(duration > 0) currentPosition.toFloat() / duration else 0f },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(4.dp)
@@ -237,12 +243,27 @@ fun Home(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    LinearProgressIndicator(
-                        progress = {0.3f},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(6.dp)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Slider(
+                            value = if(duration > 0) currentPosition.toFloat() / duration else 0f,
+                            onValueChange = { progress ->
+                                val newPosition = (progress * duration).toLong()
+                                viewModel.searchPosition(newPosition)
+                            },
+                            onValueChangeFinished = {
+
+                            },
+                            colors = SliderDefaults.colors(
+                                thumbColor = Color.White,
+                                activeTrackColor = Color(0xFF6FE4FF),
+                                inactiveTrackColor = Color.Gray
+                            ),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -250,8 +271,17 @@ fun Home(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Text("0:45", color = Color.Gray)
-                        Text("3:20", color = Color.Gray)
+                        Text(
+                            text = viewModel.formatTime(currentPosition),
+                            color = Color.Gray,
+                            fontSize = 12.sp
+                        )
+
+                        Text(
+                            text = viewModel.formatTime(duration),
+                            color = Color.Gray,
+                            fontSize = 12.sp
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(32.dp))
