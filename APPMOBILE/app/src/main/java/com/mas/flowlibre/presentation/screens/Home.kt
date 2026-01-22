@@ -10,7 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -20,12 +20,11 @@ import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mas.flowlibre.domain.model.Song
+import com.mas.flowlibre.presentation.components.BottomNavigationBar
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun Home(
@@ -40,6 +39,8 @@ fun Home(
     val currentPosition by viewModel.currentPosition.collectAsState()
     val duration by viewModel.duration.collectAsState()
     val isDragging by viewModel.isDragging.collectAsState()
+    var selectedTab by remember { mutableStateOf(0) }
+
 
 
     Box(
@@ -51,11 +52,15 @@ fun Home(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF0B0B0E))
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 148.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ){
             item {
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier
+                    .height(45.dp)
+                    .statusBarsPadding()
+                )
                 Header()
             }
 
@@ -147,7 +152,8 @@ fun Home(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(bottom = 80.dp)
+                        .padding(horizontal = 16.dp)
                         .clickable {isPlayedExpanded = true},
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF15151B))
                 ) {
@@ -202,6 +208,15 @@ fun Home(
             }
         }
 
+        BottomNavigationBar(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 12.dp)
+                .zIndex(3f),
+            selectedTab = selectedTab,
+            onTabSelected = { tab -> selectedTab = tab }
+        )
+
 
         if (isPlayedExpanded && currentSong != null){
             Box(
@@ -209,6 +224,7 @@ fun Home(
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.9f))
                     .clickable {isPlayedExpanded = false}
+                    .zIndex(2f)
             ) {
                 val songs = currentSong!!
                 Column(
