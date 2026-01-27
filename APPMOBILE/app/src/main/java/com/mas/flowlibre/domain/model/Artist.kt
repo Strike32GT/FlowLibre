@@ -1,6 +1,6 @@
 package com.mas.flowlibre.domain.model
 
-data class Artist (
+data class Artist(
     val id: Int,
     val name: String,
     val verified: Boolean,

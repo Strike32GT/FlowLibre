@@ -44,7 +44,7 @@ fun Perfil() {
             }
 
             item {
-                SectionTitle(
+                SectionTitlePerfil(
                     icon = Icons.Default.QueueMusic,
                     title = "PlayList"
                 )
@@ -161,7 +161,7 @@ fun EmptyState(
 
 
 @Composable
-fun SectionTitle(
+fun SectionTitlePerfil(
     icon: ImageVector,
     title: String
 ) {

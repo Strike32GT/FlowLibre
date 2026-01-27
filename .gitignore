@@ -18,3 +18,8 @@ APPMOBILE/build/
 APPMOBILE/local.properties
 APPMOBILE/*.apk
 APPMOBILE/*.aab
+APPMOBILE/app/build/
+APPMOBILE/app/release/
+APPMOBILE/app/debug/
+*.keystore
+*.jks
