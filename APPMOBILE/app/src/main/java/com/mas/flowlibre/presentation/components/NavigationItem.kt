@@ -20,13 +20,13 @@ fun NavigationItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         IconButton(
             onClick = onClick,
             modifier = Modifier.size(40.dp)
         ) {
             Icon(
-                imageVector =  icon,
+                imageVector = icon,
                 contentDescription = label,
                 tint = if (isSelected) Color(0xFF6FE4FF) else Color.Gray,
                 modifier = Modifier.size(24.dp)

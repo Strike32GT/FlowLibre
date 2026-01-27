@@ -23,7 +23,7 @@ fun BottomNavigationBar(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
-    ) {
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
