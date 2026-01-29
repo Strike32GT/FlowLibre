@@ -16,10 +16,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
-import com.mas.flowlibre.presentation.components.BottomNavigationBar
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
 
 @Composable
-fun Perfil() {
+fun Perfil(
+    navController: NavHostController
+) {
     var selectedTab by remember { mutableStateOf(3) }
 
     Box(
@@ -63,13 +67,14 @@ fun Perfil() {
             }
         }
 
-        BottomNavigationBar(
+        BottomNavigationBarWithNavigation(
+            navController = navController,
+            selectedTab = selectedTab,
+            onTabSelected = { tab -> selectedTab = tab },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 12.dp)
-                .zIndex(3f),
-            selectedTab = selectedTab,
-            onTabSelected = { tab -> selectedTab = tab }
+                .zIndex(3f)
         )
 
 

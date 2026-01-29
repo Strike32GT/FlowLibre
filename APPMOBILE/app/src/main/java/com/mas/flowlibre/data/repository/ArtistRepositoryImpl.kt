@@ -6,14 +6,14 @@ import com.mas.flowlibre.domain.repository.ArtistRepository
 
 class ArtistRepositoryImpl : ArtistRepository {
     override suspend fun getBuscarArtista(): List<ArtistDto> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override suspend fun getPopularArtists(): List<ArtistDto> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override suspend fun searchArtists(query: String): List<ArtistDto> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 }

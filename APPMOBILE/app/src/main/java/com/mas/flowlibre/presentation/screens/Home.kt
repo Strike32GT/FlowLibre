@@ -22,13 +22,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.mas.flowlibre.domain.model.Song
-import com.mas.flowlibre.presentation.components.BottomNavigationBar
+import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 
 @Composable
 fun Home(
-    viewModel: HomeViewModel = viewModel(),
+    navController: NavHostController,
+    viewModel: HomeViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val songs by viewModel.songs.collectAsState()
@@ -208,13 +211,14 @@ fun Home(
             }
         }
 
-        BottomNavigationBar(
+        BottomNavigationBarWithNavigation(
+            navController = navController,
+            selectedTab = selectedTab,
+            onTabSelected = { tab -> selectedTab = tab },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 12.dp)
-                .zIndex(3f),
-            selectedTab = selectedTab,
-            onTabSelected = { tab -> selectedTab = tab }
+                .zIndex(3f)
         )
 
 

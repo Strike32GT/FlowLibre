@@ -8,6 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.mas.flowlibre.presentation.navigation.AppNavigation
+import com.mas.flowlibre.presentation.screens.Biblioteca
 import com.mas.flowlibre.presentation.screens.BuscarArtista
 import com.mas.flowlibre.presentation.screens.Home
 import com.mas.flowlibre.presentation.screens.Perfil
@@ -17,7 +20,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Home()
+            val navController = rememberNavController()
+            AppNavigation(navController)
         }
     }
 }
@@ -33,5 +37,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    BuscarArtista()
+    val navController = rememberNavController()
+    AppNavigation(navController)
 }

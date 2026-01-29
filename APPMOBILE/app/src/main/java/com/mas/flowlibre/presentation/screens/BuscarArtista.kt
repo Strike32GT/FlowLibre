@@ -19,9 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.mas.flowlibre.domain.model.Artist
 import com.mas.flowlibre.presentation.components.BottomNavigationBar
+import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
 import com.mas.flowlibre.presentation.viewModel.*
 
 
@@ -108,6 +112,7 @@ fun EmptyStateBuscar(
 
 @Composable
 fun BuscarArtista(
+    navController: NavHostController,
     viewModel: ArtistViewModel = viewModel()
 ) {
     var selectedTab by remember { mutableStateOf(1) }
@@ -167,13 +172,14 @@ fun BuscarArtista(
             }
         }
 
-        BottomNavigationBar(
+        BottomNavigationBarWithNavigation(
+            navController = navController,
+            selectedTab = selectedTab,
+            onTabSelected = { tab -> selectedTab = tab },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 12.dp)
-                .zIndex(3f),
-            selectedTab = selectedTab,
-            onTabSelected = { tab -> selectedTab = tab }
+                .zIndex(3f)
         )
     }
 }
