@@ -165,7 +165,7 @@ fun Home(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AsyncImage(
-                            model = "http://ip:8000${song.coverUrl}", // ip del celular
+                            model = "http://192.168.18.7:8000${song.coverUrl}", // ip del celular
                             contentDescription = song.title,
                             modifier = Modifier
                                 .size(56.dp)
@@ -239,7 +239,7 @@ fun Home(
                     verticalArrangement = Arrangement.Center
                 ) {
                     AsyncImage(
-                        model = "http://ip:8000${songs.coverUrl}",
+                        model = "http://192.168.18.7:8000${songs.coverUrl}",
                         contentDescription = songs.title,
                         modifier = Modifier
                             .size(300.dp)
@@ -448,7 +448,7 @@ fun RecommendedCard(
         ) {
 
             AsyncImage(
-                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                model = "http://192.168.18.7:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -500,7 +500,7 @@ fun TrendItem(song: Song, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ){
             AsyncImage(
-                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                model = "http://192.168.18.7:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .size(54.dp)
@@ -540,7 +540,7 @@ fun PopularItem(song: Song, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ){
             AsyncImage(
-                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                model = "http://192.168.18.7:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .size(54.dp)
@@ -635,7 +635,7 @@ fun NewReleaseCard(
             modifier = Modifier.padding(10.dp)
         ){
             AsyncImage(
-                model = "http://ip:8000" + song.coverUrl, //ip del celular
+                model = "http://192.168.18.7:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .fillMaxWidth()
