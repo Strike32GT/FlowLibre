@@ -1,3 +1,4 @@
+# Backend Django
 Backend/venv/
 Backend/**/__pycache__/
 Backend/*.pyc
@@ -6,12 +7,14 @@ Backend/.env
 Backend/*.log
 Backend/media/
 Backend/staticfiles/
-# General
-.DS_Store
-.vscode/
-.idea/
-*.log
-# Android (adicional)
+Backend/**/migrations/0*.py
+Backend/migrations/
+Backend/FlowLibre_Backend/local_settings.py
+Backend/db.json
+Backend/fixtures/
+Backend/logs/
+
+# Android
 APPMOBILE/.idea/
 APPMOBILE/.gradle/
 APPMOBILE/build/
@@ -21,5 +24,26 @@ APPMOBILE/*.aab
 APPMOBILE/app/build/
 APPMOBILE/app/release/
 APPMOBILE/app/debug/
+APPMOBILE/captures/
+APPMOBILE/.externalNativeBuild/
+APPMOBILE/.cxx/
+APPMOBILE/keystore.properties
+APPMOBILE/app/google-services.json
 *.keystore
 *.jks
+
+# General
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.bak
+*.backup
+*.out
+.env.*
+!.env.example

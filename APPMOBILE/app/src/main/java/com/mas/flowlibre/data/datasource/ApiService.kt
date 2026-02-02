@@ -1,9 +1,11 @@
 package com.mas.flowlibre.data.datasource
 
 import com.mas.flowlibre.data.model.AlbumDto
+import com.mas.flowlibre.data.model.ArtistDto
 import com.mas.flowlibre.data.model.SongDTO
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface ApiService {
@@ -22,4 +24,7 @@ interface ApiService {
 
     @GET("api/albums/{albumId}/")
     suspend fun getAlbumDetail(@Path("albumId") albumId: Int): AlbumDto
+
+    @GET("api/artists/search/")
+    suspend fun searchArtists(@Query("q") query: String): List<ArtistDto>
 }

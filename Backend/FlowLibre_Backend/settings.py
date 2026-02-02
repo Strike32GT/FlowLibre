@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-h=4wkbasidnx)))8e8!i3&5#*&qt@fe9kx@2&6)2u#q$i9^!q0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.18.7'] #aqui coloca tu ip del celular y la que utiliza la pc/laptop
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.18.7','192.168.18.205'] #aqui coloca tu ip del celular y la que utiliza la pc/laptop
                                                            #Ejemplo: '127.0.0.1', 'localhost', '192.000.00.0'
 
 
