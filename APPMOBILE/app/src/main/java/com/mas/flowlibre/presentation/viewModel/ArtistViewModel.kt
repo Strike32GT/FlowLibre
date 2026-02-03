@@ -73,7 +73,7 @@ class ArtistViewModel(
                 _artists.value = popularArtists.map { dto ->
 
                     Artist(
-                        id = dto.id_artist,
+                        id = dto.id,
                         name = dto.name,
                         verified = false,
                         description = "",
@@ -116,7 +116,7 @@ class ArtistViewModel(
                 _artists.value = searchResult.map { dto ->
 
                     Artist(
-                        id = dto.id_artist,
+                        id = dto.id,
                         name = dto.name,
                         verified = false,
                         description = "",

@@ -349,6 +349,7 @@ fun BuscarArtista(
                     ArtistItem(
                         artist = artist,
                         onArtistClick = { artistId ->
+                            println("DEBUG: Clicked artist ID: $artistId, artist.id: ${artist.id}")
                             navController.navigate("artist_profile/${artist.id}")
                         })
 

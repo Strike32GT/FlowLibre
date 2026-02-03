@@ -4,7 +4,7 @@ package com.mas.flowlibre.data.model
 
 data class ArtistDto(
 
-    val id_artist: Int,
+    val id: Int,
 
     val name: String,
 

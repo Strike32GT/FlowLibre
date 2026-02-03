@@ -5,6 +5,8 @@ from .models import Artist
 from .serializers import ArtistSerializer
 from songs.serializers import SongSerializer
 from albums.serializers import AlbumSerializer
+from songs.models import Song
+from albums.models import Album
 
 
 

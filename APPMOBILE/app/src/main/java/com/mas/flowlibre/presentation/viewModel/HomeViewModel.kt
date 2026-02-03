@@ -81,7 +81,7 @@ class HomeViewModel (private val songRepository: SongRepository = SongRepository
     fun playSong(context: Context, song: Song) {
         exoPlayer?.release()
         exoPlayer = ExoPlayer.Builder(context).build().apply {
-            val fullAudioUrl = "http://192.168.18.7:8000" + song.audioUrl //ip del celular
+            val fullAudioUrl = "http://192.168.18.205:8000" + song.audioUrl //ip del celular
             val mediaItem = MediaItem.fromUri(fullAudioUrl)
             setMediaItem(mediaItem)
             prepare()
