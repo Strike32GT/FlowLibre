@@ -5,7 +5,7 @@ from .models import Song
 
 
 class SongSerializer(serializers.ModelSerializer):
-
+    artist_name = serializers.SerializerMethodField()
     class Meta:
 
         model= Song

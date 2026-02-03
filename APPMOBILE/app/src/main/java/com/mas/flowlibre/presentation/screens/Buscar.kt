@@ -349,7 +349,7 @@ fun BuscarArtista(
                     ArtistItem(
                         artist = artist,
                         onArtistClick = { artistId ->
-                            navController.navigate("artist_profile/\$artistId")
+                            navController.navigate("artist_profile/${artist.id}")
                         })
 
                 }
