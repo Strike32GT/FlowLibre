@@ -3,6 +3,7 @@ package com.mas.flowlibre.presentation.screens
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 
 import androidx.compose.foundation.layout.*
 
@@ -345,7 +346,11 @@ fun BuscarArtista(
 
                 items(artists) { artist ->
 
-                    ArtistItem(artist = artist)
+                    ArtistItem(
+                        artist = artist,
+                        onArtistClick = { artistId ->
+                            navController.navigate("artist_profile/\$artistId")
+                        })
 
                 }
 
@@ -505,13 +510,17 @@ fun SearchBar(
 
 @Composable
 
-fun ArtistItem(artist: Artist) {
+fun ArtistItem(
+    artist: Artist,
+    onArtistClick: (Int) -> Unit = {}
+) {
 
     Card(
 
         modifier = Modifier
 
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable{onArtistClick(artist.id)},
 
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E24)),
 

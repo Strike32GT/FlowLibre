@@ -21,6 +21,13 @@ fun AppNavigation(
         composable("buscar") { BuscarArtista(navController) }
         composable("biblioteca") { Biblioteca(navController) }
         composable("perfil") { Perfil(navController) }
+        composable("artist_profile/{artistId}"){ backStackEntry ->
+            val artistId = backStackEntry.arguments?.getString("artistId")?.toInt() ?: 0
+            ArtistProfileScreen(
+                navController = navController,
+                artistId = artistId
+            )
+        }
     }
 }
 
