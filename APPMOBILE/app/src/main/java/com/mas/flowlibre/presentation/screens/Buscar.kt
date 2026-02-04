@@ -545,7 +545,11 @@ fun ArtistItem(
 
             AsyncImage(
 
-                model = artist.profileImageUrl.ifEmpty { "" },
+                model = if (artist.profileImageUrl.isNotEmpty()) {
+                    "http://192.168.18.205:8000${artist.profileImageUrl}"
+                } else {
+                    ""
+                },
 
                 contentDescription = "",
 
