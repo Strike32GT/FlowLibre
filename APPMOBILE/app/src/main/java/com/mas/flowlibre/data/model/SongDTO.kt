@@ -7,6 +7,7 @@ data class SongDTO(
     val audio_url: String,
     val cover_url: String,
     val artist_id: Int,
+    val artist_name: String,
     val album_id: Int?,
     val created_at: String?
 )

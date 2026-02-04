@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
@@ -80,8 +81,14 @@ fun ArtistProfileScreen(
                         )
                     }
 
-                    items(profile.albums) { album ->
-                        AlbumItem(album=album)
+                    item {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(profile.albums) { album ->
+                                AlbumItem(album=album)
+                            }
+                        }
                     }
                 }
             }

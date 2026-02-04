@@ -65,7 +65,7 @@ class HomeViewModel (private val songRepository: SongRepository = SongRepository
                     Song(
                         id = dto.id,
                         title = dto.title,
-                        artistName = "Artists ${dto.artist_id}",
+                        artistName = dto.artist_name,
                         coverUrl = dto.cover_url,
                         audioUrl = dto.audio_url
                     )
