@@ -13,6 +13,7 @@ import com.mas.flowlibre.presentation.navigation.AppNavigation
 import com.mas.flowlibre.presentation.screens.Biblioteca
 import com.mas.flowlibre.presentation.screens.BuscarArtista
 import com.mas.flowlibre.presentation.screens.Home
+import com.mas.flowlibre.presentation.screens.Login
 import com.mas.flowlibre.presentation.screens.Perfil
 
 class MainActivity : ComponentActivity() {
@@ -20,8 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            AppNavigation(navController)
+            Login()
         }
     }
 }
@@ -37,6 +37,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    val navController = rememberNavController()
-    AppNavigation(navController)
+    Login()
+    //val navController = rememberNavController()
+    //AppNavigation(navController)
 }
