@@ -1,6 +1,5 @@
 package com.mas.flowlibre.presentation.screens
 
-
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
@@ -16,10 +15,14 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 
 @Composable
-fun Login() {
+fun CrearCuenta() {
+    var nombre by remember {mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("")}
-    var passwordVisible by remember { mutableStateOf(false)}
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmVisible by remember { mutableStateOf(false) }
+
 
     Box(
         modifier = Modifier
@@ -34,7 +37,7 @@ fun Login() {
                 )
             ),
         contentAlignment = Alignment.Center
-    ) {
+    ){
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.88f)
@@ -49,7 +52,10 @@ fun Login() {
                     .clip(RoundedCornerShape(14.dp))
                     .background(
                         brush = Brush.horizontalGradient(
-                            listOf(Color(0xFFFF5F6D), Color(0xFFFF8A5B))
+                            listOf(
+                                Color(0xFFFF5F6D),
+                                Color(0xFFFF8A5B)
+                            )
                         )
                     ),
                 contentAlignment = Alignment.Center
@@ -58,7 +64,6 @@ fun Login() {
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
 
             Text(
                 text = "FlowLibre",
@@ -71,20 +76,52 @@ fun Login() {
 
 
             Text(
-                text = "Bienvenido de vuelta",
+                text = "Unete a FLowLibre",
                 color = Color.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "Inicia sesión para continuar",
-                color = Color.White,
+                text = "Crear tu cuenta y empieza a disfrutar",
+                color = Color.Gray,
                 fontSize = 14.sp
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+
+            Text(
+                text = "Nombre Completo",
+                color = Color.White,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                placeholder = {Text("tu nombre")},
+                leadingIcon = {
+                    Icon(Icons.Default.Person, contentDescription = null)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF2A2A2E),
+                    unfocusedBorderColor = Color(0xFF2A2A2E),
+                    focusedContainerColor = Color(0xFF121214),
+                    unfocusedContainerColor = Color(0xFF121214),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = Color(0xFFFF5F6D)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "Correo Electronico",
@@ -97,8 +134,8 @@ fun Login() {
 
             OutlinedTextField(
                 value = email,
-                onValueChange = {email = it},
-                placeholder = {Text("tuemail@gmail.com")},
+                onValueChange = {email=it},
+                placeholder = {Text("tu@email.com")},
                 leadingIcon = {
                     Icon(Icons.Default.Email, contentDescription = null)
                 },
@@ -127,25 +164,78 @@ fun Login() {
 
             Spacer(modifier = Modifier.height(6.dp))
 
-
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it},
-                placeholder = {Text("******")},
+                onValueChange = {password = it},
+                placeholder = {Text("Minimo 6 caracteres")},
                 leadingIcon = {
                     Icon(Icons.Default.Lock, contentDescription = null)
                 },
                 trailingIcon = {
-                    IconButton(onClick = {passwordVisible != passwordVisible}) {
+                    IconButton(onClick = {
+                        passwordVisible = !passwordVisible
+                    }) {
                         Icon(
                             imageVector = if (passwordVisible)
-                                Icons.Default.Visibility
-                            else Icons.Default.VisibilityOff,
+                            Icons.Default.Visibility
+                            else
+                            Icons.Default.VisibilityOff,
                             contentDescription = null
                         )
                     }
                 },
                 visualTransformation = if (passwordVisible)
+                    VisualTransformation.None
+                else
+                    PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFE63946),
+                    unfocusedBorderColor = Color(0xFF2A2A2E),
+                    focusedContainerColor = Color(0xFF121214),
+                    unfocusedContainerColor = Color(0xFF121214),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = Color(0xFFE63946)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Confirmar Password",
+                color = Color.White,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it},
+                placeholder = { Text("Repite tu password")},
+                leadingIcon = {
+                    Icon(Icons.Default.Lock, contentDescription = null)
+                },
+                trailingIcon = {
+                    IconButton(onClick = {
+                        confirmVisible = !confirmVisible
+                    }) {
+                        Icon(
+                            imageVector = if (confirmVisible)
+                                Icons.Default.Visibility
+                            else
+                                Icons.Default.VisibilityOff,
+                            contentDescription = null
+                        )
+                    }
+                },
+
+
+                visualTransformation = if (confirmVisible)
                     VisualTransformation.None
                 else
                     PasswordVisualTransformation(),
@@ -170,37 +260,26 @@ fun Login() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
+                shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE63946)
-                ),
-                shape = RoundedCornerShape(12.dp)
+                    containerColor = Color(0xFF3B82F6),
+                )
             ) {
                 Text(
-                    text = "Iniciar Sesion",
+                    text = "Crear Cuenta",
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Divider(color = Color(0xFF2A2A2E))
 
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-
-            Text(
-                text = "No tienes cuenta? Crear Cuenta",
-                color = Color(0xFF4EA8FF),
-                fontSize = 13.sp
-            )
-
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad",
+                text = "Al crear una cuenta, aceptas nuestros Términos de Servicio y Política de Privacidad",
                 color = Color.DarkGray,
                 fontSize = 11.sp,
                 lineHeight = 14.sp

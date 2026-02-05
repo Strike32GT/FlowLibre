@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mas.flowlibre.presentation.navigation.AppNavigation
 import com.mas.flowlibre.presentation.screens.Biblioteca
 import com.mas.flowlibre.presentation.screens.BuscarArtista
+import com.mas.flowlibre.presentation.screens.CrearCuenta
 import com.mas.flowlibre.presentation.screens.Home
 import com.mas.flowlibre.presentation.screens.Login
 import com.mas.flowlibre.presentation.screens.Perfil
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Login()
+            CrearCuenta()
         }
     }
 }
@@ -37,7 +38,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    Login()
+    CrearCuenta()
     //val navController = rememberNavController()
     //AppNavigation(navController)
 }
