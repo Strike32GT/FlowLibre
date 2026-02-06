@@ -13,9 +13,12 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
+import androidx.navigation.NavHostController
 
 @Composable
-fun CrearCuenta() {
+fun CrearCuenta(
+    navHostController: NavHostController
+) {
     var nombre by remember {mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

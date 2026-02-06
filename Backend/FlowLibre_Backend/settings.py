@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'songs',
     'albums',
-    'usuarios',
+    'users',
     'artist' 
 ]
 

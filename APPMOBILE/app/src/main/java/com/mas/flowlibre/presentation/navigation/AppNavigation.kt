@@ -16,7 +16,7 @@ fun AppNavigation(
         navController = navController,
         startDestination = "home"
     ) {
-
+        composable("login"){ Login(navController) }
         composable("home") { Home(navController) }
         composable("buscar") { BuscarArtista(navController) }
         composable("biblioteca") { Biblioteca(navController) }
@@ -28,6 +28,7 @@ fun AppNavigation(
                 artistId = artistId
             )
         }
+        composable("register"){CrearCuenta(navController)}
     }
 }
 

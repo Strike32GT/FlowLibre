@@ -5,10 +5,15 @@ package com.mas.flowlibre.data.datasource
 import com.mas.flowlibre.data.model.AlbumDto
 import com.mas.flowlibre.data.model.ArtistDto
 import com.mas.flowlibre.data.model.ArtistProfileDto
+import com.mas.flowlibre.data.model.LoginRequest
+import com.mas.flowlibre.data.model.LoginResponse
 
 import com.mas.flowlibre.data.model.SongDTO
+import retrofit2.Response
+import retrofit2.http.Body
 
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -55,4 +60,6 @@ interface ApiService {
     @GET("api/artists/{artist_id}/")
     suspend fun getArtistDetail(@Path("artist_id") artistId: Int): ArtistProfileDto
 
+    @POST("users/login/")
+    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 }

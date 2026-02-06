@@ -50,9 +50,9 @@ urlpatterns = [
 
     path('api/albums/', include('albums.urls')),
 
-    path('api/users/', include('usuarios.urls')),
-
     path('api/artists/', include('artist.urls')),
+
+    path('api/users/', include('users.urls')),
 
 ]
 

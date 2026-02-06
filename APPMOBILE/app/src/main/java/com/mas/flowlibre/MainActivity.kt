@@ -22,7 +22,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CrearCuenta()
+            val navController = rememberNavController()
+            AppNavigation(navController)
         }
     }
 }
@@ -38,7 +39,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    CrearCuenta()
-    //val navController = rememberNavController()
-    //AppNavigation(navController)
+    val navController = rememberNavController()
+    AppNavigation(navController)
 }
