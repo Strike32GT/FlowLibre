@@ -8,12 +8,20 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.mas.flowlibre.presentation.viewModel.RegisterState
+import com.mas.flowlibre.presentation.viewModel.RegisterViewModel
 
 @Composable
 fun CrearCuenta(
@@ -25,7 +33,28 @@ fun CrearCuenta(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
+    val registerViewModel : RegisterViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return RegisterViewModel(context) as T
+            }
+        }
+    )
+
+    val registerState by registerViewModel.registerState.collectAsState()
+
+    LaunchedEffect(registerState) {
+        when (registerState) {
+            is RegisterState.Success -> {
+                navHostController.navigate("home") {
+                    popUpTo("login") { inclusive = true }
+                }
+            }
+            else -> {/**/}
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -259,21 +288,45 @@ fun CrearCuenta(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {/**/},
+                onClick = {
+                    if (registerViewModel.validatePasswords(password, confirmPassword)) {
+                        registerViewModel.register(nombre, email, password)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF3B82F6),
-                )
+                ),
+                enabled = nombre.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()
+                        && confirmPassword.isNotEmpty() && registerState !is RegisterState.Loading
             ) {
-                Text(
-                    text = "Crear Cuenta",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
+                if (registerState is RegisterState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White
+                    )
+                } else {
+                    Text(
+                        text = "Crear Cuenta",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
+
+            if(registerState is RegisterState.Error) {
+                Text(
+                    text = (registerState as RegisterState.Error).message,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 

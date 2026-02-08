@@ -12,9 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mas.flowlibre.presentation.viewModel.LoginState
@@ -22,7 +25,7 @@ import com.mas.flowlibre.presentation.viewModel.LoginViewModel
 
 @Composable
 fun Login(
-    navHostController: NavHostController,
+    navController: NavHostController,
     onLoginSuccess: () -> Unit = {},
     onNavigateToRegister: () -> Unit = {}
 ) {
@@ -30,10 +33,26 @@ fun Login(
     var password by remember { mutableStateOf("")}
     var passwordVisible by remember { mutableStateOf(false)}
 
-    val loginViewModel: LoginViewModel = viewModel()
+    val context = LocalContext.current
+
+    val loginViewModel: LoginViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return LoginViewModel(context) as T
+            }
+        }
+    )
+
     val loginState by loginViewModel.loginState.collectAsState()
 
-
+    LaunchedEffect(loginState) {
+        when (loginState){
+            is LoginState.Success -> {
+                onLoginSuccess
+            }
+            else -> {/**/}
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -226,7 +245,10 @@ fun Login(
             Text(
                 text = "No tienes cuenta? Crear Cuenta",
                 color = Color(0xFF4EA8FF),
-                fontSize = 13.sp
+                fontSize = 13.sp,
+                modifier = Modifier.clickable{
+                    onNavigateToRegister()
+                }
             )
 
             Spacer(modifier = Modifier.height(8.dp))

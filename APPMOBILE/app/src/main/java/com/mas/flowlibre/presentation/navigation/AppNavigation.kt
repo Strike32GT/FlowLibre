@@ -2,9 +2,11 @@ package com.mas.flowlibre.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.mas.flowlibre.data.session.SessionManager
 import com.mas.flowlibre.presentation.components.BottomNavigationBar
 import com.mas.flowlibre.presentation.screens.*
 
@@ -12,11 +14,26 @@ import com.mas.flowlibre.presentation.screens.*
 fun AppNavigation(
     navController : NavHostController
 ) {
+    val context = LocalContext.current
+    val sessionManager = SessionManager(context)
+
+    val startDestination = if(sessionManager.isLoggedIn()) "home" else "login"
+
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = startDestination
     ) {
-        composable("login"){ Login(navController) }
+        composable("login"){ Login(
+            navController,
+            onLoginSuccess = {
+                navController.navigate("home") {
+                    popUpTo("login") { inclusive = true }
+                }
+            },
+            onNavigateToRegister = {
+                navController.navigate("register")
+            }
+        ) }
         composable("home") { Home(navController) }
         composable("buscar") { BuscarArtista(navController) }
         composable("biblioteca") { Biblioteca(navController) }

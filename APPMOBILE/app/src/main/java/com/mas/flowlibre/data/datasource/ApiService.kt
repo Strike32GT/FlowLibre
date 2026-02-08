@@ -7,6 +7,7 @@ import com.mas.flowlibre.data.model.ArtistDto
 import com.mas.flowlibre.data.model.ArtistProfileDto
 import com.mas.flowlibre.data.model.LoginRequest
 import com.mas.flowlibre.data.model.LoginResponse
+import com.mas.flowlibre.data.model.RegisterRequest
 
 import com.mas.flowlibre.data.model.SongDTO
 import retrofit2.Response
@@ -60,6 +61,9 @@ interface ApiService {
     @GET("api/artists/{artist_id}/")
     suspend fun getArtistDetail(@Path("artist_id") artistId: Int): ArtistProfileDto
 
-    @POST("users/login/")
+    @POST("api/users/login/")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+
+    @POST("api/users/register/")
+    suspend fun register(@Body request: RegisterRequest): Response<LoginResponse>
 }
