@@ -8,7 +8,9 @@ class User(models.Model):
     role = models.CharField(max_length=20, default='user')
     created_at = models.DateTimeField(auto_now_add=True)
     
-
+    class Meta:
+        db_table = 'users'
+        
     def set_password(self, password):
         self.password_hash = hashlib.sha256(password.encode()).hexdigest()
 
