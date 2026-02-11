@@ -48,7 +48,7 @@ fun Login(
     LaunchedEffect(loginState) {
         when (loginState){
             is LoginState.Success -> {
-                onLoginSuccess
+                onLoginSuccess()
             }
             else -> {/**/}
         }

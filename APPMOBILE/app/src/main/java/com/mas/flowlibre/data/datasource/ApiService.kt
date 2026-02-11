@@ -66,4 +66,8 @@ interface ApiService {
 
     @POST("api/users/register/")
     suspend fun register(@Body request: RegisterRequest): Response<LoginResponse>
+
+
+    @POST("users/add-to-library")
+    suspend fun addToLibrary(@Body request: AddToLibraryRequest): Response<AddToLibraryResponse>
 }

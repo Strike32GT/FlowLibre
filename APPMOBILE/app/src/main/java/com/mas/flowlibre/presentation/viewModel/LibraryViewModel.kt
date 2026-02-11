@@ -2,6 +2,8 @@ package com.mas.flowlibre.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mas.flowlibre.data.datasource.RetrofitClient
+import com.mas.flowlibre.data.model.AddToLibraryRequest
 import com.mas.flowlibre.domain.model.PlayList
 import com.mas.flowlibre.domain.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +24,27 @@ class LibraryViewModel : ViewModel() {
 
     private val _downloadedSongs = MutableStateFlow<List<Song>>(emptyList())
     val downloadedSongs: StateFlow<List<Song>> = _downloadedSongs
+
+    private val _addToLibraryState = MutableStateFlow<AddToLibraryState?>(null)
+    val addToLibraryState: StateFlow<AddToLibraryState?> = _addToLibraryState
+
+    fun addToLibrary(songId:Int){
+        viewModelScope.launch {
+            _addToLibraryState.value = AddToLibraryState.Loading
+            try {
+                val response = RetrofitClient.api.addToLibrary(AddToLibraryRequest(songId))
+                if (response.isSuccessful) {
+                    _addToLibraryState.value = AddToLibraryState.Success(response.body()?.message ?: "Agregado")
+                } else {
+                    _addToLibraryState.value = AddToLibraryState.Error("Error al agregar")
+                }
+            }catch (e: Exception) {
+                _addToLibraryState.value = AddToLibraryState.Error("Error de conexión")
+            }
+        }
+    }
+
+
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading

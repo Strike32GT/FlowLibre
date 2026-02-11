@@ -41,6 +41,11 @@ fun AppNavigation(
         composable("login") {
             Login(
                 navController = navController,
+                onLoginSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
                 onNavigateToRegister = {
                     navController.navigate("crear_cuenta")
                 }

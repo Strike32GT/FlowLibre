@@ -5,7 +5,7 @@ class User(models.Model):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True)
     password_hash = models.CharField(max_length=255)
-    role = models.CharField(max_length=20, default='user')
+    role = models.CharField(max_length=20, default='USER')
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -20,3 +20,14 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+    
+
+class LibrarySong(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    song = models.ForeignKey('songs.Song', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add= True)
+
+    class Meta:
+        db_table = 'library_songs'
+        unique_together = ['user', 'song']
+            
