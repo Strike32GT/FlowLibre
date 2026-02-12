@@ -27,7 +27,7 @@ fun ArtistHeader(artist: ArtistDto) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            model = "http://192.168.18.205:8000" + artist.image_url,
+            model = "http://10.0.2.2:8000" + artist.image_url,
             contentDescription = artist.name,
             modifier = Modifier
                 .size(120.dp)

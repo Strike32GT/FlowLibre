@@ -2,6 +2,8 @@ package com.mas.flowlibre.data.datasource
 
 
 
+import com.mas.flowlibre.data.model.AddToLibraryRequest
+import com.mas.flowlibre.data.model.AddToLibraryResponse
 import com.mas.flowlibre.data.model.AlbumDto
 import com.mas.flowlibre.data.model.ArtistDto
 import com.mas.flowlibre.data.model.ArtistProfileDto
@@ -68,6 +70,6 @@ interface ApiService {
     suspend fun register(@Body request: RegisterRequest): Response<LoginResponse>
 
 
-    @POST("users/add-to-library")
+    @POST("api/users/add-to-library")
     suspend fun addToLibrary(@Body request: AddToLibraryRequest): Response<AddToLibraryResponse>
 }

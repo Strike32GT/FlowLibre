@@ -35,7 +35,7 @@ fun SongItem(song: SongDTO) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "http://192.168.18.205:8000" + song.cover_url,
+                model = "http://10.0.2.2:8000" + song.cover_url,
                 contentDescription = song.title,
                 modifier = Modifier
                     .size(48.dp)

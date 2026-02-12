@@ -12,6 +12,10 @@ class SessionManager(context: Context) {
     companion object {
         private const val KEY_USER = "user_data"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
+
+        private const val KEY_ACCESS_TOKEN = "access_token"
+
+        private const val KEY_REFRESH_TOKEN = "refresh_token"
         private const val KEY_TOKEN = "auth_token"
     }
 
@@ -43,11 +47,30 @@ class SessionManager(context: Context) {
         prefs.edit()
             .remove(KEY_USER)
             .remove(KEY_IS_LOGGED_IN)
+            .remove(KEY_ACCESS_TOKEN)
+            .remove(KEY_REFRESH_TOKEN)
             .remove(KEY_TOKEN)
             .apply()
     }
 
     fun getToken(): String? {
-        return prefs.getString(KEY_TOKEN,null)
+        return getAccessToken()
     }
+
+    fun saveTokens(access_token: String, refresh_token: String) {
+        prefs.edit()
+            .putString(KEY_ACCESS_TOKEN, access_token)
+            .putString(KEY_REFRESH_TOKEN, refresh_token)
+            .apply()
+    }
+
+    fun getAccessToken(): String? {
+        return prefs.getString(KEY_ACCESS_TOKEN, null)
+    }
+
+    fun getRefreshToken(): String? {
+        return prefs.getString(KEY_REFRESH_TOKEN, null)
+    }
+
+
 }

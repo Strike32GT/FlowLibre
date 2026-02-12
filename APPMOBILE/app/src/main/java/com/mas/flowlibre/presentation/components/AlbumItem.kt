@@ -28,7 +28,7 @@ fun AlbumItem(album: AlbumDto) {
     ) {
         Column{
             AsyncImage(
-                model = "http://192.168.18.205:8000" + album.cover_url,
+                model = "http://10.0.2.2:8000" + album.cover_url,
                 contentDescription = album.title,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -2,7 +2,6 @@ package com.mas.flowlibre.presentation.screens
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,7 +10,6 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,11 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.mas.flowlibre.domain.model.Song
 import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
+import com.mas.flowlibre.presentation.viewModel.AddToLibraryState
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
+import com.mas.flowlibre.presentation.viewModel.LibraryViewModel
 
 @Composable
 fun Home(
@@ -43,7 +42,24 @@ fun Home(
     val duration by viewModel.duration.collectAsState()
     val isDragging by viewModel.isDragging.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
+    val libraryViewModel : LibraryViewModel = viewModel()
+    val addToLibraryState by libraryViewModel.addToLibraryState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(addToLibraryState) {
+        when (addToLibraryState) {
+            is AddToLibraryState.Success -> {
+                snackbarHostState.showSnackbar("Se ha agregado tu rolon")
+            }
+
+            is AddToLibraryState.Error -> {
+                val errorState = addToLibraryState as AddToLibraryState.Error
+                snackbarHostState.showSnackbar("Error ${errorState.message}")
+            }
+
+            else -> {/**/}
+        }
+    }
 
 
     Box(
@@ -165,7 +181,7 @@ fun Home(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AsyncImage(
-                            model = "http://192.168.18.205:8000${song.coverUrl}", // ip del celular
+                            model = "http://10.0.2.2:8000${song.coverUrl}", // ip del celular
                             contentDescription = song.title,
                             modifier = Modifier
                                 .size(56.dp)
@@ -206,10 +222,32 @@ fun Home(
                                 tint = Color.White
                             )
                         }
+
+                        IconButton(
+                            onClick = {
+                                libraryViewModel.addToLibrary(song.id)
+                            }
+                        ){
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Agregar a Biblioteca",
+                                modifier = Modifier.size(24.dp),
+                                tint = Color.White
+                            )
+                        }
                     }
                 }
             }
         }
+
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp)
+        )
+
 
         BottomNavigationBarWithNavigation(
             navController = navController,
@@ -239,7 +277,7 @@ fun Home(
                     verticalArrangement = Arrangement.Center
                 ) {
                     AsyncImage(
-                        model = "http://192.168.18.205:8000${songs.coverUrl}",
+                        model = "http://10.0.2.2:8000${songs.coverUrl}",
                         contentDescription = songs.title,
                         modifier = Modifier
                             .size(300.dp)
@@ -448,7 +486,7 @@ fun RecommendedCard(
         ) {
 
             AsyncImage(
-                model = "http://192.168.18.205:8000" + song.coverUrl, //ip del celular
+                model = "http://10.0.2.2:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -500,7 +538,7 @@ fun TrendItem(song: Song, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ){
             AsyncImage(
-                model = "http://192.168.18.205:8000" + song.coverUrl, //ip del celular
+                model = "http://10.0.2.2:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .size(54.dp)
@@ -540,7 +578,7 @@ fun PopularItem(song: Song, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ){
             AsyncImage(
-                model = "http://192.168.18.205:8000" + song.coverUrl, //ip del celular
+                model = "http://10.0.2.2:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .size(54.dp)
@@ -635,7 +673,7 @@ fun NewReleaseCard(
             modifier = Modifier.padding(10.dp)
         ){
             AsyncImage(
-                model = "http://192.168.18.205:8000" + song.coverUrl, //ip del celular
+                model = "http://10.0.2.2:8000" + song.coverUrl, //ip del celular
                 contentDescription = song.title,
                 modifier = Modifier
                     .fillMaxWidth()
