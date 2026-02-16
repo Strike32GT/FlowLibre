@@ -168,7 +168,7 @@ fun Login(
                     Icon(Icons.Default.Lock, contentDescription = null)
                 },
                 trailingIcon = {
-                    IconButton(onClick = {passwordVisible != passwordVisible}) {
+                    IconButton(onClick = {passwordVisible = !passwordVisible}) {
                         Icon(
                             imageVector = if (passwordVisible)
                                 Icons.Default.Visibility

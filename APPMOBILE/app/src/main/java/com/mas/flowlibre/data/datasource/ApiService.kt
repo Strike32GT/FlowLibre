@@ -2,74 +2,148 @@ package com.mas.flowlibre.data.datasource
 
 
 
+
+
+
+
 import com.mas.flowlibre.data.model.AddToLibraryRequest
+
 import com.mas.flowlibre.data.model.AddToLibraryResponse
+
 import com.mas.flowlibre.data.model.AlbumDto
+
 import com.mas.flowlibre.data.model.ArtistDto
+
 import com.mas.flowlibre.data.model.ArtistProfileDto
+
 import com.mas.flowlibre.data.model.LoginRequest
+
 import com.mas.flowlibre.data.model.LoginResponse
+
 import com.mas.flowlibre.data.model.RegisterRequest
 
+
+
 import com.mas.flowlibre.data.model.SongDTO
+
 import retrofit2.Response
+
 import retrofit2.http.Body
 
+
+
 import retrofit2.http.GET
+
 import retrofit2.http.POST
 
+
+
 import retrofit2.http.Path
+
 import retrofit2.http.Query
+
+
+
 
 
 interface ApiService {
 
 
 
+
+
+
+
     @GET("api/songs/")
+
+
 
     suspend fun getSongs(): List<SongDTO>
 
 
 
+
+
+
+
     @GET("api/songs/{songId}/")
+
+
 
     suspend fun getSongDetail(@Path("songId") songId: Int): SongDTO
 
 
 
+
+
+
+
     @GET("api/songs/album/{albumId}/")
+
+
 
     suspend fun getSongsByAlbum(@Path("albumId") albumId: Int): List<SongDTO>
 
 
 
+
+
+
+
     @GET("api/albums/")
+
+
 
     suspend fun getAlbums(): List<AlbumDto>
 
 
 
+
+
+
+
     @GET("api/albums/{albumId}/")
+
+
 
     suspend fun getAlbumDetail(@Path("albumId") albumId: Int): AlbumDto
 
 
 
+
+
+
+
     @GET("api/artists/search/")
+
     suspend fun searchArtists(@Query("q") query: String): List<ArtistDto>
 
 
+
+
+
     @GET("api/artists/{artist_id}/")
+
     suspend fun getArtistDetail(@Path("artist_id") artistId: Int): ArtistProfileDto
 
+
+
     @POST("api/users/login/")
+
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
+
+
     @POST("api/users/register/")
+
     suspend fun register(@Body request: RegisterRequest): Response<LoginResponse>
 
 
+
+
+
     @POST("api/users/add-to-library")
+
     suspend fun addToLibrary(@Body request: AddToLibraryRequest): Response<AddToLibraryResponse>
+
 }

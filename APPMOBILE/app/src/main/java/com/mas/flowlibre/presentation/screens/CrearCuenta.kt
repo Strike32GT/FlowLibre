@@ -48,7 +48,7 @@ fun CrearCuenta(
     LaunchedEffect(registerState) {
         when (registerState) {
             is RegisterState.Success -> {
-                navHostController.navigate("home") {
+                navHostController.navigate("login") {
                     popUpTo("login") { inclusive = true }
                 }
             }

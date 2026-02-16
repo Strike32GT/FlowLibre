@@ -30,7 +30,7 @@ fun AppNavigation(
 
         navController = navController,
 
-        startDestination = "home"
+        startDestination = "login"
 
     ) {
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.mas.flowlibre.data.session.SessionManager
 import com.mas.flowlibre.domain.model.Song
 import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
 import com.mas.flowlibre.presentation.viewModel.AddToLibraryState
@@ -33,6 +34,7 @@ fun Home(
     viewModel: HomeViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val sessionManager = remember { SessionManager(context) }
     val songs by viewModel.songs.collectAsState()
     val currentSong by viewModel.currentSong.collectAsState()
     var isPlayerVisible by remember {mutableStateOf(false)}
@@ -42,9 +44,11 @@ fun Home(
     val duration by viewModel.duration.collectAsState()
     val isDragging by viewModel.isDragging.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
-    val libraryViewModel : LibraryViewModel = viewModel()
-    val addToLibraryState by libraryViewModel.addToLibraryState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val libraryViewModel: LibraryViewModel = viewModel()
+    val addToLibraryState by libraryViewModel.addToLibraryState.collectAsState()
+
+
 
     LaunchedEffect(addToLibraryState) {
         when (addToLibraryState) {
