@@ -83,6 +83,8 @@ object RetrofitClient {
                 val sessionManager = SessionManager(context!!)
                 val token = sessionManager.getAccessToken()
 
+                Log.d("RetrofitClient", "Token recuperado: $token")
+
                 if (token != null) {
                     val newRequest = request.newBuilder()
                         .addHeader("Authorization", "Bearer $token")

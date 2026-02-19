@@ -91,3 +91,28 @@ class LibrarySong(models.Model):
         db_table = 'library_songs'
         unique_together = ['user', 'song']
             
+
+
+class Playlist(models.Model):
+    name = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'playlists' 
+
+    def __str__(self):
+        return f"{self.name} - {self.user.username}"      
+
+
+
+
+class PlaylistSong(models.Model):
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    song = models.ForeignKey('songs.Song', on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    
+    class Meta:
+        db_table = 'playlist_songs'
+        unique_together = ['playlist', 'song']

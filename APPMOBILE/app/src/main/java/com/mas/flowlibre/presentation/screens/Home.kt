@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.mas.flowlibre.data.session.SessionManager
 import com.mas.flowlibre.domain.model.Song
 import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
+import com.mas.flowlibre.presentation.viewModel.AddSongToPlaylistState
 import com.mas.flowlibre.presentation.viewModel.AddToLibraryState
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 import com.mas.flowlibre.presentation.viewModel.LibraryViewModel
@@ -47,6 +48,29 @@ fun Home(
     val snackbarHostState = remember { SnackbarHostState() }
     val libraryViewModel: LibraryViewModel = viewModel()
     val addToLibraryState by libraryViewModel.addToLibraryState.collectAsState()
+    var showPlaylistDialog by remember { mutableStateOf(false) }
+    var selectedSong by remember { mutableStateOf<Song?>(null) }
+
+
+    LaunchedEffect(Unit) {
+        libraryViewModel.loadUserPlaylists()
+    }
+
+    val addSongToPlaylistState by libraryViewModel.addSongToPlaylistState.collectAsState()
+
+
+    LaunchedEffect(addSongToPlaylistState) {
+        when (addSongToPlaylistState) {
+            is AddSongToPlaylistState.Success -> {
+                snackbarHostState.showSnackbar("Cancion agregada a la playlist")
+            }
+            is AddSongToPlaylistState.Error -> {
+                val errorState = addSongToPlaylistState as AddSongToPlaylistState.Error
+                snackbarHostState.showSnackbar("Error: ${errorState.message}")
+            }
+            else -> { }
+        }
+    }
 
 
 
@@ -229,12 +253,13 @@ fun Home(
 
                         IconButton(
                             onClick = {
-                                libraryViewModel.addToLibrary(song.id)
+                                selectedSong = song
+                                showPlaylistDialog = true
                             }
                         ){
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = "Agregar a Biblioteca",
+                                contentDescription = "Agregar a PlayList",
                                 modifier = Modifier.size(24.dp),
                                 tint = Color.White
                             )
@@ -394,6 +419,76 @@ fun Home(
                 }
             }
         }
+    }
+
+    if (showPlaylistDialog && selectedSong != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showPlaylistDialog = false
+                selectedSong = null
+            },
+            title = {
+                Text(
+                    text = "Agregar PLayList",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
+            text = {
+                val userPlaylists by libraryViewModel.userPlaylists.collectAsState()
+                if (userPlaylists.isEmpty()) {
+                    Text(
+                        text = "No tienes playlists. Crea una primero.",
+                        color = Color(0xFFA9A9B2)
+                    )
+                } else {
+                    LazyColumn{
+                        items(userPlaylists) { playlist ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable{
+                                        libraryViewModel.addSongToPlaylist(playlist.id, selectedSong!!.id)
+                                        showPlaylistDialog = false
+                                        selectedSong = null
+                                    }
+                                    .padding(vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MusicNote,
+                                    contentDescription = null,
+                                    tint = Color(0xFF6FE4FF),
+                                    modifier = Modifier.size(24.dp)
+                                )
+
+                                Spacer(modifier = Modifier.width(16.dp))
+
+                                Text(
+                                    text = playlist.name,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showPlaylistDialog = false
+                        selectedSong= null
+                    }
+                ) {
+                    Text(
+                        text = "Cancelar",
+                        color = Color(0xFF6FE4FF)
+                        )
+                }
+            },
+            containerColor = Color(0xFF15151B),
+            tonalElevation = 8.dp
+        )
     }
 }
 

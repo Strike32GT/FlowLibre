@@ -2,6 +2,7 @@ package com.mas.flowlibre.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -9,16 +10,20 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.mas.flowlibre.domain.model.PlayList
+import com.mas.flowlibre.data.model.Playlist
 import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
+import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 import com.mas.flowlibre.presentation.viewModel.LibraryViewModel
+import com.mas.flowlibre.presentation.viewModel.LoadPlaylistSongsState
 
 @Composable
 fun Biblioteca(
@@ -27,6 +32,36 @@ fun Biblioteca(
 ) {
     var selectedTab by remember { mutableStateOf(2) }
     val playlists by viewModel.playlists.collectAsState()
+    val userPlaylists by viewModel.userPlaylists.collectAsState()
+    val createPlaylistState by viewModel.createPlaylistState.collectAsState()
+    val loadPlaylistSongsState by viewModel.loadPlaylistSongsState.collectAsState()
+    var showCreatePlaylistDialog by remember { mutableStateOf(false) }
+    var playlistName by remember { mutableStateOf("")}
+    val snackbarHostState = remember { SnackbarHostState() }
+    val homeviewmodel : HomeViewModel = viewModel()
+    val context = LocalContext.current
+
+
+    LaunchedEffect(loadPlaylistSongsState) {
+        val state = loadPlaylistSongsState
+        when (state) {
+            is LoadPlaylistSongsState.Success -> {
+                if (state.songs.isNotEmpty()){
+                    homeviewmodel.playSong(context, state.songs.first())
+                }
+            }
+            is LoadPlaylistSongsState.Error -> {
+                snackbarHostState.showSnackbar("Error ${state.message}")
+            }
+            else -> {/**/}
+        }
+
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadUserPlaylists()
+    }
+
 
     Box(
         modifier = Modifier
@@ -106,31 +141,94 @@ fun Biblioteca(
             }
 
             item {
-                Text(
-                    text = "PlayList",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "PlayList",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White
+                        )
                     )
-                )
+
+                    IconButton(
+                        onClick = { showCreatePlaylistDialog = true }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Crear PlayList",
+                            tint = Color.White
+                        )
+                    }
+                }
             }
 
-
-            if(playlists.isEmpty()){
-                item{
+            if (userPlaylists.isEmpty()) {
+                item {
                     EmptyPlaylistsState()
                 }
-            }else {
-                items(playlists) { playlist ->
-                    PlaylistItem(playlist = playlist)
+            } else {
+                items(userPlaylists) { playlist ->
+                    UserPlaylistItem(
+                        playlist = playlist,
+                        libraryViewModel = viewModel,
+                        homeViewModel = homeviewmodel
+                    )
                 }
             }
+
 
             item {
                 Spacer(modifier = Modifier.height(20.dp))
             }
         }
 
+
+        if (showCreatePlaylistDialog) {
+            AlertDialog(
+                onDismissRequest = {
+                    showCreatePlaylistDialog = false
+                    playlistName = ""
+                },
+                title = {
+                    Text("Crear una nueva Playlist")
+                }, text = {
+                    OutlinedTextField(
+                        value = playlistName,
+                        onValueChange = { playlistName = it },
+                        label = { Text("Nombre de PlayList")},
+                        singleLine = true
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            if (playlistName.isNotBlank()) {
+                                viewModel.createPlaylist(playlistName)
+                                showCreatePlaylistDialog = false
+                                playlistName = ""
+                            }
+                        },
+                        enabled = playlistName.isNotBlank()
+                    ) {
+                        Text("Crear")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            showCreatePlaylistDialog = false
+                            playlistName = ""
+                        }
+                    ) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
         BottomNavigationBarWithNavigation(
             navController = navController,
             selectedTab = selectedTab,
@@ -145,7 +243,7 @@ fun Biblioteca(
 
 
 @Composable
-fun PlaylistItem(playlist: PlayList) {
+fun UserPlaylistItem(playlist: Playlist, libraryViewModel: LibraryViewModel, homeViewModel: HomeViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -192,19 +290,26 @@ fun PlaylistItem(playlist: PlayList) {
 
 
                 Text(
-                    text = "${playlist.totalSongs} canciones • ${playlist.durationLabel}",
+                    text = "Creada: ${playlist.created_at.take(10)}",
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = Color(0xFFA9A9B2)
                     )
                 )
             }
 
-            Icon(
-                imageVector = Icons.Default.PlayArrow,
-                contentDescription = "Reproducir",
-                tint = Color(0xFF6FE4FF),
-                modifier = Modifier.size(24.dp)
-            )
+
+            IconButton(
+                onClick = {
+                    libraryViewModel.loadPlaylistSongs(playlist.id)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Reproducir",
+                    tint = Color(0xFF6FE4FF),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }

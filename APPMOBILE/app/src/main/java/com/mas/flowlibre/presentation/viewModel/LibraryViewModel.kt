@@ -8,8 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.mas.flowlibre.data.datasource.RetrofitClient
+import com.mas.flowlibre.data.model.AddSongToPlaylistRequest
 
 import com.mas.flowlibre.data.model.AddToLibraryRequest
+import com.mas.flowlibre.data.model.Playlist
+import com.mas.flowlibre.data.model.PlaylistRequest
 import com.mas.flowlibre.data.session.SessionManager
 
 import com.mas.flowlibre.domain.model.PlayList
@@ -57,6 +60,24 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
     private val _addToLibraryState = MutableStateFlow<AddToLibraryState?>(null)
 
     val addToLibraryState: StateFlow<AddToLibraryState?> = _addToLibraryState
+
+
+    private val _userPlaylists = MutableStateFlow<List<Playlist>>(emptyList())
+    val userPlaylists : StateFlow<List<Playlist>> = _userPlaylists
+
+
+    private val _createPlaylistState = MutableStateFlow<CreatePlaylistState?>(null)
+    val createPlaylistState: StateFlow<CreatePlaylistState?> = _createPlaylistState
+
+    private val _addSongToPlaylistState= MutableStateFlow<AddSongToPlaylistState?>(null)
+    val addSongToPlaylistState: StateFlow<AddSongToPlaylistState?> = _addSongToPlaylistState
+
+    private val _playlistSongs = MutableStateFlow<List<Song>>(emptyList())
+    val playlistSongs: StateFlow<List<Song>> = _playlistSongs
+
+
+    private val _loadPlaylistSongsState = MutableStateFlow<LoadPlaylistSongsState>(LoadPlaylistSongsState.Idle)
+    val loadPlaylistSongsState: StateFlow<LoadPlaylistSongsState> = _loadPlaylistSongsState
 
 
 
@@ -138,27 +159,18 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
     fun loadUserPlaylists() {
 
         viewModelScope.launch {
-
-            _isLoading.value = true
-
             try {
+                if (!sessionManager.isLoggedIn()) return@launch
 
+                val response = RetrofitClient.api.getUserPlaylists()
+
+                if (response.isSuccessful) {
+                    _userPlaylists.value = response.body() ?: emptyList()
+                }
+            }catch (e: Exception) {
                 //
-
-                _playlists.value = emptyList()
-
-            } catch (e: Exception) {
-
-
-
-            } finally {
-
-                _isLoading.value = false
-
             }
-
         }
-
     }
 
 
@@ -207,6 +219,85 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
 
         }
 
+    }
+
+    fun createPlaylist(name: String) {
+        viewModelScope.launch {
+            _createPlaylistState.value = CreatePlaylistState.Loading
+            try {
+                if (!sessionManager.isLoggedIn()) {
+                    _createPlaylistState.value = CreatePlaylistState.Error("No autenticado")
+                    return@launch
+                }
+
+                val response = RetrofitClient.api.createPlaylist(PlaylistRequest(name))
+
+                if (response.isSuccessful) {
+                    _createPlaylistState.value = CreatePlaylistState.Success(response.body()!!)
+                    loadUserPlaylists()
+                } else {
+                    _createPlaylistState.value = CreatePlaylistState.Error("Error al crear la playlist")
+                }
+            } catch (e: Exception) {
+                _createPlaylistState.value = CreatePlaylistState.Error("Error de conexion")
+            }
+        }
+    }
+
+
+
+    fun addSongToPlaylist(playlistId: Int, songId: Int) {
+        viewModelScope.launch {
+            _addSongToPlaylistState.value = AddSongToPlaylistState.Loading
+            try {
+                if (!sessionManager.isLoggedIn()) {
+                    _addSongToPlaylistState.value = AddSongToPlaylistState.Error("No autenticado")
+                    return@launch
+                }
+
+                val response = RetrofitClient.api.addSongToPlaylist(
+                    AddSongToPlaylistRequest(playlistId, songId)
+                )
+
+                if (response.isSuccessful) {
+                    _addSongToPlaylistState.value = AddSongToPlaylistState.Success
+                } else {
+                    _addSongToPlaylistState.value = AddSongToPlaylistState.Error("Error al agregar una cancion")
+                }
+            }catch (e: Exception) {
+                _addSongToPlaylistState.value = AddSongToPlaylistState.Error("Error de conexion")
+            }
+        }
+    }
+
+
+    fun loadPlaylistSongs(playlistId: Int) {
+        viewModelScope.launch {
+            _loadPlaylistSongsState.value = LoadPlaylistSongsState.Loading
+
+            try {
+                val response = RetrofitClient.api.getPlaylistSongs(playlistId)
+
+                if (response.isSuccessful) {
+                    val songs = response.body()?.map { songDTO ->
+                        Song(
+                            id = songDTO.id,
+                            title = songDTO.title,
+                            artistName = songDTO.artist_name,
+                            coverUrl = songDTO.cover_url,
+                            audioUrl = songDTO.audio_url
+                        )
+                    } ?: emptyList()
+
+                    _playlistSongs.value = songs
+                    _loadPlaylistSongsState.value = LoadPlaylistSongsState.Success(songs)
+                } else {
+                    _loadPlaylistSongsState.value = LoadPlaylistSongsState.Error("Error al cargar canciones")
+                }
+            } catch (e: Exception) {
+                _loadPlaylistSongsState.value = LoadPlaylistSongsState.Error("Error de conexión")
+            }
+        }
     }
 
 }

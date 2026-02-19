@@ -6,6 +6,7 @@ package com.mas.flowlibre.data.datasource
 
 
 
+import com.mas.flowlibre.data.model.AddSongToPlaylistRequest
 import com.mas.flowlibre.data.model.AddToLibraryRequest
 
 import com.mas.flowlibre.data.model.AddToLibraryResponse
@@ -19,6 +20,8 @@ import com.mas.flowlibre.data.model.ArtistProfileDto
 import com.mas.flowlibre.data.model.LoginRequest
 
 import com.mas.flowlibre.data.model.LoginResponse
+import com.mas.flowlibre.data.model.Playlist
+import com.mas.flowlibre.data.model.PlaylistRequest
 
 import com.mas.flowlibre.data.model.RegisterRequest
 
@@ -145,5 +148,20 @@ interface ApiService {
     @POST("api/users/add-to-library")
 
     suspend fun addToLibrary(@Body request: AddToLibraryRequest): Response<AddToLibraryResponse>
+
+
+    @POST("api/users/playlists/")
+    suspend fun createPlaylist(@Body request: PlaylistRequest): Response<Playlist>
+
+
+    @GET("api/users/playlists/my/")
+    suspend fun getUserPlaylists(): Response<List<Playlist>>
+
+    @POST("api/users/playlists/add-song/")
+    suspend fun addSongToPlaylist(@Body request: AddSongToPlaylistRequest): Response<Unit>
+
+    @GET("api/users/playlists/{playlist_id}/songs/")
+    suspend fun getPlaylistSongs(@Path("playlist_id") playlistId: Int): Response<List<SongDTO>>
+
 
 }
