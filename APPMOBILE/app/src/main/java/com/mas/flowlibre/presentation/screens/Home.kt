@@ -28,6 +28,7 @@ import com.mas.flowlibre.presentation.viewModel.AddSongToPlaylistState
 import com.mas.flowlibre.presentation.viewModel.AddToLibraryState
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 import com.mas.flowlibre.presentation.viewModel.LibraryViewModel
+import com.mas.flowlibre.presentation.viewModel.SongInPlaylistState
 
 @Composable
 fun Home(
@@ -444,6 +445,33 @@ fun Home(
                 } else {
                     LazyColumn{
                         items(userPlaylists) { playlist ->
+
+                            var isCheking by remember {mutableStateOf(false)}
+                            var songExists by remember {mutableStateOf(false)}
+                            val songInPlaylistState by libraryViewModel.songInPlaylistState.collectAsState()
+
+                            LaunchedEffect(playlist.id, selectedSong?.id) {
+                                if (selectedSong != null) {
+                                    isCheking = true
+                                    libraryViewModel.checkSongInPlaylist(playlist.id, selectedSong!!.id)
+                                }
+                            }
+
+
+                            LaunchedEffect(songInPlaylistState) {
+                                when (songInPlaylistState) {
+                                    is SongInPlaylistState.Success -> {
+                                        isCheking = false
+                                        songExists = (songInPlaylistState as SongInPlaylistState.Success).exists
+                                    }
+                                    is SongInPlaylistState.Error -> {
+                                        isCheking = false
+                                    }
+                                    else -> {/**/}
+                                }
+                            }
+
+
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()

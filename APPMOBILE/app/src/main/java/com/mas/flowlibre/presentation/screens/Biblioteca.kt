@@ -1,6 +1,7 @@
 package com.mas.flowlibre.presentation.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.*
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mas.flowlibre.data.model.Playlist
+import com.mas.flowlibre.presentation.components.SongList
 import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 import com.mas.flowlibre.presentation.viewModel.LibraryViewModel
@@ -40,6 +42,9 @@ fun Biblioteca(
     val snackbarHostState = remember { SnackbarHostState() }
     val homeviewmodel : HomeViewModel = viewModel()
     val context = LocalContext.current
+    val currentLoadState = viewModel.loadPlaylistSongsState.collectAsState().value
+    var showPlaylistSongsDialog  by remember { mutableStateOf(false) }
+    var selectedPlaylistForSongs by remember { mutableStateOf<Playlist?>(null) }
 
 
     LaunchedEffect(loadPlaylistSongsState) {
@@ -103,7 +108,7 @@ fun Biblioteca(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "3h 25min",
+                            text = viewModel.getTotalListeningTime(),
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -123,7 +128,7 @@ fun Biblioteca(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${playlists.size}",
+                            text = "${userPlaylists.size}",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -175,7 +180,12 @@ fun Biblioteca(
                     UserPlaylistItem(
                         playlist = playlist,
                         libraryViewModel = viewModel,
-                        homeViewModel = homeviewmodel
+                        homeViewModel = homeviewmodel,
+                        onPlaylistClick = {
+                            selectedPlaylistForSongs = playlist
+                            showPlaylistSongsDialog = true
+                            viewModel.loadPlaylistSongs(playlist.id)
+                        }
                     )
                 }
             }
@@ -229,6 +239,109 @@ fun Biblioteca(
                 }
             )
         }
+
+
+
+        if (showPlaylistSongsDialog && selectedPlaylistForSongs != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    showPlaylistSongsDialog = false
+                    selectedPlaylistForSongs = null
+                },
+                title = {
+                    Text(
+                        text = selectedPlaylistForSongs!!.name,
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                text = {
+                    val playlistSongs by viewModel.playlistSongs.collectAsState()
+
+                    when (currentLoadState) {
+                        is LoadPlaylistSongsState.Loading -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                contentAlignment = Alignment.Center
+                            ){
+                                CircularProgressIndicator(color = Color(0xFF6FE4FF))
+                            }
+                        }
+
+                        is LoadPlaylistSongsState.Success -> {
+                            if (playlistSongs.isEmpty()) {
+                                Text(
+                                    text = "Esta playlist no tiene canciones",
+                                    color = Color(0xFFA9A9B2)
+                                )
+                            } else {
+                                SongList(
+                                    songs = playlistSongs,
+                                    formatTime = { viewModel.formatTime(it) }
+                                )
+                            }
+                        }
+
+                        is LoadPlaylistSongsState.Error -> {
+                            Text(
+                                text = "Error: ${currentLoadState.message}",
+                                color = Color.Red
+                            )
+                        }
+
+                        else -> {
+                            Text(
+                                text = "Cargando ...",
+                                color = Color(0xFFA9A9B2)
+                            )
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            val playlistSongs = viewModel.playlistSongs.value
+                            if (playlistSongs.isNotEmpty()) {
+                                homeviewmodel.playSong(context, playlistSongs.first())
+                            }
+                            showPlaylistSongsDialog = false
+                            selectedPlaylistForSongs = null
+                        }
+                    ) {
+                        Text(
+                            text = "Reproducir",
+                            color = Color(0xFF6FE4FF)
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            showPlaylistSongsDialog = false
+                            selectedPlaylistForSongs = null
+                        }
+                    ) {
+                        Text(
+                            text = "Cerrar",
+                            color = Color(0xFFA9A9B2)
+                        )
+                    }
+                },
+                containerColor = Color(0xFF15151B),
+                tonalElevation = 8.dp
+            )
+        }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp)
+        )
+
+
         BottomNavigationBarWithNavigation(
             navController = navController,
             selectedTab = selectedTab,
@@ -238,15 +351,24 @@ fun Biblioteca(
                 .padding(bottom = 12.dp)
                 .zIndex(3f)
         )
+
+
+
     }
 }
 
 
 @Composable
-fun UserPlaylistItem(playlist: Playlist, libraryViewModel: LibraryViewModel, homeViewModel: HomeViewModel) {
+fun UserPlaylistItem(
+    playlist: Playlist,
+    libraryViewModel: LibraryViewModel,
+    homeViewModel: HomeViewModel,
+    onPlaylistClick: () -> Unit = {}
+) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable{onPlaylistClick()},
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E24)),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)

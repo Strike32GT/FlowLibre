@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 import kotlinx.coroutines.launch
 
-
+import kotlin.collections.sumOf
 
 
 
@@ -74,6 +74,9 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
 
     private val _playlistSongs = MutableStateFlow<List<Song>>(emptyList())
     val playlistSongs: StateFlow<List<Song>> = _playlistSongs
+
+    private val _songInPlaylistState = MutableStateFlow<SongInPlaylistState>(SongInPlaylistState.Idle)
+    val songInPlaylistState: StateFlow<SongInPlaylistState> = _songInPlaylistState
 
 
     private val _loadPlaylistSongsState = MutableStateFlow<LoadPlaylistSongsState>(LoadPlaylistSongsState.Idle)
@@ -285,7 +288,8 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
                             title = songDTO.title,
                             artistName = songDTO.artist_name,
                             coverUrl = songDTO.cover_url,
-                            audioUrl = songDTO.audio_url
+                            audioUrl = songDTO.audio_url,
+                            duration = songDTO.duration
                         )
                     } ?: emptyList()
 
@@ -298,6 +302,49 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
                 _loadPlaylistSongsState.value = LoadPlaylistSongsState.Error("Error de conexión")
             }
         }
+    }
+
+
+    fun getTotalListeningTime(): String {
+        val librarySongsDuration = favoriteSongs.value.sumOf { it.duration }
+        val playlistSongsDuration = playlistSongs.value.sumOf { it.duration }
+
+        val totalSeconds = librarySongsDuration + playlistSongsDuration
+
+        val hours = totalSeconds/ 3600
+        val minutes = (totalSeconds % 3600) / 60
+
+        return when {
+            hours > 0 -> "${hours}h ${minutes}min"
+            minutes > 0 -> "${minutes}min"
+            else -> "0min"
+        }
+    }
+
+
+    fun checkSongInPlaylist(playlistId: Int, songId: Int){
+        viewModelScope.launch {
+            try {
+                if (!sessionManager.isLoggedIn()) return@launch
+
+                val response = RetrofitClient.api.checkSongInPlaylist(playlistId, songId)
+                if (response.isSuccessful) {
+                    val exists = response.body()?.get("exists") ?: false
+                    _songInPlaylistState.value = SongInPlaylistState.Success(exists)
+                }else {
+                    _songInPlaylistState.value = SongInPlaylistState.Error("Error al verificar")
+                }
+            }catch (e: Exception) {
+                _songInPlaylistState.value = SongInPlaylistState.Error("Error de conexion")
+            }
+        }
+    }
+
+
+    fun formatTime(ms: Long): String {
+        val seconds = (ms/1000) %60
+        val minutes = (ms / 1000 / 60) % 60
+        return String.format("%02d:%02d", minutes, seconds)
     }
 
 }

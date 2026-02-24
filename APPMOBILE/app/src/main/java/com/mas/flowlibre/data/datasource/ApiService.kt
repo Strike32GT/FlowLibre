@@ -163,5 +163,9 @@ interface ApiService {
     @GET("api/users/playlists/{playlist_id}/songs/")
     suspend fun getPlaylistSongs(@Path("playlist_id") playlistId: Int): Response<List<SongDTO>>
 
-
+    @GET("api/users/playlists/{playlist_id}/songs/{song_id}/exists")
+    suspend fun checkSongInPlaylist(
+        @Path("playlist_id") playlistId: Int,
+        @Path("song_id") songId: Int
+    ): Response<Map<String, Boolean>>
 }

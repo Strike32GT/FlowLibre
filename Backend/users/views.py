@@ -160,3 +160,20 @@ def get_playlist_songs(request, playlist_id):
     songs = [ps.song for ps in playlist_songs]
     serializer = SongSerializer(songs, many=True)
     return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_song_in_playlist(request, playlist_id, song_id):
+    try:
+        exists = PlaylistSong.objects.filter(
+            playlist_id = playlist_id,
+            song_id = song_id,
+            playlist__user = request.user
+        ).exists()
+
+        return Response({'exists':exists})
+    
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)

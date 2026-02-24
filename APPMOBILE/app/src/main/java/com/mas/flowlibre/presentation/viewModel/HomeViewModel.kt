@@ -67,7 +67,8 @@ class HomeViewModel (private val songRepository: SongRepository = SongRepository
                         title = dto.title,
                         artistName = dto.artist_name,
                         coverUrl = dto.cover_url,
-                        audioUrl = dto.audio_url
+                        audioUrl = dto.audio_url,
+                        duration = dto.duration
                     )
                 }
                 _songs.value = domainSongs

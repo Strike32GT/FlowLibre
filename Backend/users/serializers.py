@@ -2,11 +2,31 @@ from rest_framework import serializers
 
 
 
+
+
+
+
 from django.contrib.auth import authenticate
 
 
 
-from .models import User, LibrarySong, Playlist, PlaylistSong
+
+
+
+
+from .models import User, LibrarySong
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22,7 +42,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
     class Meta:
+
+
+
+
 
 
 
@@ -30,7 +58,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
         fields = ['id', 'username', 'email', 'created_at']
+
+
+
+
 
 
 
@@ -46,9 +82,27 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
 
+
+
     password = serializers.CharField(write_only=True)
+
+
+
+
 
 
 
@@ -56,7 +110,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
         model = User
+
+
 
         fields = ['username','email','password']
 
@@ -70,25 +130,75 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     def create(self, validated_data):
+
+
 
         password = validated_data.pop('password')
 
+
+
         user = User(
+
+
 
             username = validated_data['username'],
 
+
+
             email=validated_data['email']
+
+
 
         )
 
 
 
+
+
+
+
         user.set_password(password)
+
+
 
         user.save()
 
+
+
         return user
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -112,7 +222,15 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
     email = serializers.EmailField()
+
+
+
+
 
 
 
@@ -120,11 +238,23 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
     class Meta:
+
+
 
         model = User
 
+
+
         fields = ['email','password']
+
+
+
+
 
 
 
@@ -132,7 +262,15 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
         email = data.get('email')
+
+
+
+
 
 
 
@@ -144,7 +282,19 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
+
+
+
+
         if email and password:
+
+
+
+
 
 
 
@@ -152,7 +302,15 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
                 user = User.objects.get(email=email)
+
+
+
+
 
 
 
@@ -160,11 +318,23 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
                     data['user']= user
 
 
 
+
+
+
+
                 else:
+
+
+
+
 
 
 
@@ -176,7 +346,19 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
+
+
+
+
             except User.DoesNotExist:
+
+
+
+
 
 
 
@@ -184,7 +366,15 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
         else:
+
+
+
+
 
 
 
@@ -196,9 +386,29 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
+
+
+
+
         return data    
 
+
+
     
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -210,15 +420,27 @@ class LoginSerializer(serializers.ModelSerializer):
 
 #Biblioteca - Canciones - Por usuario
 
+
+
 class LibrarySongSerializer(serializers.ModelSerializer):
+
+
 
     song_title = serializers.CharField(source='song.title',read_only=True)
 
+
+
     song_artist = serializers.CharField(source='song.artist.name', read_only=True)
+
+
 
     song_duration = serializers.IntegerField(source='song.duration', read_only=True)
 
+
+
     song_audio_url = serializers.URLField(source='song.audio_file', read_only=True)
+
+
 
     song_cover_url = serializers.URLField(source='song.cover_image', read_only=True)
 
@@ -226,30 +448,22 @@ class LibrarySongSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
+
+
+
     class Meta:
+
+
 
         model = LibrarySong
 
+
+
         fields = ['id', 'song', 'song_title', 'song_artist', 'song_duration', 'song_audio_url', 'song_cover_url', 'created_at']
 
+
+
         read_only_fields = ['id', 'created_at']
-
-
-
-class PlaylistSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Playlist
-        fields = ['id', 'name', 'created_at']
-        read_only_fields = ['id', 'created_at']
-
-
-
-
-class PlaylistSongSerializer(serializers.ModelSerializer):
-    song_title = serializers.CharField(source='song.title', read_only=True)
-    song_artist = serializers.CharField(source='song.artist_name', read_only=True)
-    
-    class Meta:
-        model = PlaylistSong
-        fields = ['id', 'playlist', 'song', 'song_title', 'song_artist', 'added_at']
-        read_only_fields = ['id', 'added_at']
