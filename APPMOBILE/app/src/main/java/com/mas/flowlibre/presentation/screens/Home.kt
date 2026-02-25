@@ -4,15 +4,15 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.shape.*
+import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.vector.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
@@ -23,12 +23,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mas.flowlibre.data.session.SessionManager
 import com.mas.flowlibre.domain.model.Song
-import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
-import com.mas.flowlibre.presentation.viewModel.AddSongToPlaylistState
-import com.mas.flowlibre.presentation.viewModel.AddToLibraryState
-import com.mas.flowlibre.presentation.viewModel.HomeViewModel
-import com.mas.flowlibre.presentation.viewModel.LibraryViewModel
-import com.mas.flowlibre.presentation.viewModel.SongInPlaylistState
+import com.mas.flowlibre.presentation.navigation.*
+import com.mas.flowlibre.presentation.viewModel.*
 
 @Composable
 fun Home(
@@ -190,85 +186,7 @@ fun Home(
             }
         }
 
-        if(isPlayerVisible && currentSong != null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            ){
-                val song = currentSong!!
-                Card(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .padding(bottom = 80.dp)
-                        .padding(horizontal = 16.dp)
-                        .clickable {isPlayedExpanded = true},
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF15151B))
-                ) {
-                    Row (
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        AsyncImage(
-                            model = "http://10.0.2.2:8000${song.coverUrl}", // ip del celular
-                            contentDescription = song.title,
-                            modifier = Modifier
-                                .size(56.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                        )
 
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ){
-                            Text(song.title, color = Color.White)
-                            Text(song.artistName, color = Color.Gray)
-
-                            LinearProgressIndicator(
-                                progress = { if(duration > 0) currentPosition.toFloat() / duration else 0f },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(4.dp)
-                            )
-                        }
-
-                        IconButton(
-                            onClick = {
-                                if (isPlaying) {
-                                    viewModel.pauseSong()
-                                    isPlaying = false
-                                } else {
-                                    viewModel.resumeSong()
-                                    isPlaying = true
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                contentDescription = null,
-                                modifier = Modifier.size(32.dp),
-                                tint = Color.White
-                            )
-                        }
-
-                        IconButton(
-                            onClick = {
-                                selectedSong = song
-                                showPlaylistDialog = true
-                            }
-                        ){
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Agregar a PlayList",
-                                modifier = Modifier.size(24.dp),
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
-            }
-        }
 
 
         SnackbarHost(

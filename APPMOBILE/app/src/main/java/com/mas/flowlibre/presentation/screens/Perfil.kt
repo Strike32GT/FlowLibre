@@ -29,15 +29,10 @@ import com.mas.flowlibre.presentation.viewModel.ProfileViewModel
 @Composable
 
 fun Perfil(
-
     navController: NavHostController
-
 ) {
-
     var selectedTab by remember { mutableStateOf(3) }
-
     val context = LocalContext.current
-
     val profileViewModel : ProfileViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -50,39 +45,23 @@ fun Perfil(
 
 
     Box(
-
         modifier = Modifier
-
             .fillMaxSize()
-
             .background(Color(0xFF0B0B0E))
-
     ) {
-
         LazyColumn(
-
             modifier = Modifier
-
                 .fillMaxSize()
-
                 .background(Color(0xFF0B0B0E))
-
                 .padding(horizontal = 16.dp)
-
                 .padding(bottom = 80.dp),
-
             verticalArrangement = Arrangement.spacedBy(16.dp)
-
         ){
-
             item {
-
                 Spacer(modifier = Modifier
                     .height(45.dp)
                     .statusBarsPadding())
-
             }
-
 
 
             item {
@@ -90,31 +69,19 @@ fun Perfil(
             }
 
 
-
             item {
-
                 SectionTitlePerfil(
-
                     icon = Icons.Default.QueueMusic,
-
                     title = "PlayList"
-
                 )
-
             }
 
 
-
             item {
-
                 EmptyState(
-
                     icon = Icons.Default.QueueMusic,
-
                     title = "No hay playlist disposnibles",
-
                     description = "Tus playlists aparecerán aquí cuando estén disponibles"
-
                 )
             }
 
@@ -140,29 +107,15 @@ fun Perfil(
 
 
         BottomNavigationBarWithNavigation(
-
             navController = navController,
-
             selectedTab = selectedTab,
-
             onTabSelected = { tab -> selectedTab = tab },
-
             modifier = Modifier
-
                 .align(Alignment.BottomCenter)
-
                 .padding(bottom = 12.dp)
-
                 .zIndex(3f)
-
         )
-
-
-
-
-
     }
-
 }
 
 
@@ -170,76 +123,46 @@ fun Perfil(
 
 
 @Composable
-
 fun ProfileHeader(currentUser: UserDto?) {
-
     Column(
-
         horizontalAlignment = Alignment.CenterHorizontally,
-
         modifier = Modifier.fillMaxWidth()
-
     ){
-
         Card(
-
             modifier = Modifier.size(120.dp),
-
             shape = CircleShape,
-
             colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E24))
-
         ){
-
             Icon(
-
                 imageVector = Icons.Default.Person,
-
                 contentDescription = "Foto de perfil",
-
                 modifier = Modifier
-
                     .fillMaxSize()
-
                     .padding(24.dp),
-
                 tint = Color(0xFF6FE4FF)
-
             )
-
         }
-
 
 
         Spacer(modifier = Modifier.height(16.dp))
 
 
-
         Text(
-
             text = currentUser?.username ?: "Tu perfil",
-
             style = MaterialTheme.typography.headlineMedium.copy(
-
                 fontWeight = FontWeight.Bold,
-
                 color = Color.White
-
             )
-
         )
-
 
 
         Text(
             text = currentUser?.username ?: "@username",
-
             style = MaterialTheme.typography.bodyLarge.copy(
-
                 color = Color(0xFFA9A9B2)
-
             )
         )
+
 
         Text(
             text = currentUser?.email ?: "email@example.com",
@@ -247,9 +170,7 @@ fun ProfileHeader(currentUser: UserDto?) {
                 color = Color(0xFFA9A9B2)
             )
         )
-
     }
-
 }
 
 
@@ -257,141 +178,81 @@ fun ProfileHeader(currentUser: UserDto?) {
 
 
 @Composable
-
 fun EmptyState(
-
     icon: ImageVector,
-
     title: String,
-
     description: String
-
 ) {
-
     Column(
-
         horizontalAlignment = Alignment.CenterHorizontally,
-
         modifier = Modifier
-
             .fillMaxWidth()
-
             .padding(32.dp)
-
     ){
-
         Icon(
-
             imageVector = icon,
-
             contentDescription = null,
-
             modifier = Modifier.size(64.dp),
-
             tint = Color(0xFF6FE4FF)
-
         )
-
 
 
         Spacer(modifier = Modifier.height(16.dp))
 
 
-
         Text(
-
             text = title,
-
             style = MaterialTheme.typography.titleMedium.copy(
-
                 fontWeight = FontWeight.SemiBold,
-
                 color = Color.White
-
             )
-
         )
-
 
 
         Spacer(modifier = Modifier.height(8.dp))
 
 
-
         Text(
-
             text = description,
-
             style = MaterialTheme.typography.bodyMedium.copy(
-
                 color = Color(0xFFA9A9B2)
-
             ),
-
             textAlign = TextAlign.Center
-
         )
-
     }
-
 }
 
 
 
 
-
 @Composable
-
 fun SectionTitlePerfil(
-
     icon: ImageVector,
-
     title: String
-
 ) {
-
     Row(
-
         verticalAlignment = Alignment.CenterVertically,
-
         modifier = Modifier.padding(vertical = 8.dp)
-
     ){
-
         Icon(
-
             imageVector = icon,
-
             contentDescription = null,
-
             tint = Color(0xFF6FE4FF),
-
             modifier = Modifier.size(20.dp)
-
         )
-
 
 
         Spacer(modifier = Modifier.width(8.dp))
 
 
-
         Text(
-
             text = title,
-
             style = MaterialTheme.typography.titleMedium.copy(
-
                 fontWeight = FontWeight.SemiBold,
-
                 color = Color.White
-
             )
-
         )
-
     }
-
 }
 
 

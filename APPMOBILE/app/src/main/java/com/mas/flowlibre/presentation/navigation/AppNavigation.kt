@@ -5,6 +5,7 @@ package com.mas.flowlibre.presentation.navigation
 import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.navigation.NavHostController
 
@@ -15,23 +16,17 @@ import androidx.navigation.compose.composable
 import com.mas.flowlibre.presentation.components.BottomNavigationBar
 
 import com.mas.flowlibre.presentation.screens.*
-
+import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 
 
 @Composable
-
 fun AppNavigation(
-
     navController : NavHostController
-
 ) {
 
     NavHost(
-
         navController = navController,
-
         startDestination = "login"
-
     ) {
 
 
@@ -59,17 +54,11 @@ fun AppNavigation(
             val artistId = backStackEntry.arguments?.getString("artistId")?.toIntOrNull() ?: 0
 
             ArtistProfileScreen(
-
                 navController = navController,
-
                 artistId = artistId
-
             )
-
         }
-
     }
-
 }
 
 
@@ -79,63 +68,35 @@ fun AppNavigation(
 @Composable
 
 fun BottomNavigationBarWithNavigation(
-
     navController: NavHostController,
-
     selectedTab: Int,
-
     onTabSelected: (Int) -> Unit,
-
-    modifier : Modifier = Modifier
-
+    modifier : Modifier = Modifier,
+    homeViewModel: HomeViewModel = viewModel()
 ) {
 
     BottomNavigationBar(
-
+        navController = navController,
         modifier = modifier,
-
         selectedTab = selectedTab,
-
+        homeViewModel = homeViewModel,
         onTabSelected = { tab ->
-
-            onTabSelected(tab)
-
-
-
-
-
             val destination = when (tab) {
-
                 0 -> "home"
-
                 1 -> "buscar"
-
                 2 -> "biblioteca"
-
                 3 -> "perfil"
-
                 else -> "home"
-
             }
 
-
-
             navController.navigate(destination) {
-
                 popUpTo(navController.graph.startDestinationId) {
-
                     saveState = true
-
                 }
 
                 launchSingleTop = true
-
                 restoreState = true
-
             }
-
         }
-
     )
-
 }
