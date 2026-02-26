@@ -1,5 +1,6 @@
 package com.mas.flowlibre.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.material.icons.Icons
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,18 +25,20 @@ fun BottomNavigationBar(
 ) {
     Box(modifier = modifier) {
         val currentSong by homeViewModel.currentSong.collectAsState()
-
         if (currentSong != null) {
             MiniPlayer(
                 song = currentSong!!,
                 homeViewModel= homeViewModel,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset( y=(-80).dp)
+                    .offset( y=(-60).dp)
                     .padding(horizontal = 16.dp)
+                    .zIndex(10f)
+                    .clickable{
+                        navController.navigate("now_playing")
+                    }
             )
         }
-
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -58,6 +62,7 @@ fun BottomNavigationBar(
                     onClick = { onTabSelected(0) }
                 )
 
+
                 NavigationItem(
                     icon = Icons.Default.Search,
                     label = "Buscar",
@@ -65,12 +70,14 @@ fun BottomNavigationBar(
                     onClick = { onTabSelected(1) }
                 )
 
+
                 NavigationItem(
                     icon = Icons.Default.LibraryMusic,
                     label = "Biblioteca",
                     isSelected =  selectedTab == 2,
                     onClick = { onTabSelected(2) }
                 )
+
 
                 NavigationItem(
                     icon = Icons.Default.Person,

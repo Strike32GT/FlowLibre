@@ -23,12 +23,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mas.flowlibre.data.model.UserDto
 import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
+import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 import com.mas.flowlibre.presentation.viewModel.ProfileViewModel
 
 
 @Composable
 
 fun Perfil(
+    homeViewModel: HomeViewModel,
     navController: NavHostController
 ) {
     var selectedTab by remember { mutableStateOf(3) }
@@ -103,18 +105,6 @@ fun Perfil(
             }
 
         }
-
-
-
-        BottomNavigationBarWithNavigation(
-            navController = navController,
-            selectedTab = selectedTab,
-            onTabSelected = { tab -> selectedTab = tab },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 12.dp)
-                .zIndex(3f)
-        )
     }
 }
 

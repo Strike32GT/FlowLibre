@@ -1,25 +1,23 @@
 package com.mas.flowlibre.presentation.viewModel
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.mas.flowlibre.data.model.UserDto
 import com.mas.flowlibre.data.session.SessionManager
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
 class ProfileViewModel(private val context: Context) : ViewModel() {
-
     private val sessionManager = SessionManager(context)
-
     private val _currentUser = MutableStateFlow<UserDto?>(null)
     val currentUser: StateFlow<UserDto?> = _currentUser
+
 
     init {
         loadUserProfile()
     }
+
 
     private fun loadUserProfile() {
         viewModelScope.launch {
@@ -27,6 +25,7 @@ class ProfileViewModel(private val context: Context) : ViewModel() {
             _currentUser.value = user
         }
     }
+
 
     fun logout() {
         viewModelScope.launch {

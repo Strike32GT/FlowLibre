@@ -1,7 +1,6 @@
 package com.mas.flowlibre.presentation.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.*
@@ -30,6 +29,7 @@ import com.mas.flowlibre.presentation.viewModel.LoadPlaylistSongsState
 @Composable
 fun Biblioteca(
     navController: NavHostController,
+    homeViewModel: HomeViewModel,
     viewModel: LibraryViewModel = viewModel()
 ) {
     var selectedTab by remember { mutableStateOf(2) }
@@ -340,20 +340,6 @@ fun Biblioteca(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 80.dp)
         )
-
-
-        BottomNavigationBarWithNavigation(
-            navController = navController,
-            selectedTab = selectedTab,
-            onTabSelected = { tab -> selectedTab = tab },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 12.dp)
-                .zIndex(3f)
-        )
-
-
-
     }
 }
 

@@ -1,13 +1,12 @@
 package com.mas.flowlibre.presentation.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.shape.*
+import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -52,7 +51,9 @@ fun MiniPlayer(
                 contentScale = ContentScale.Crop
             )
 
+
             Spacer(modifier = Modifier.width(12.dp))
+
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -62,6 +63,7 @@ fun MiniPlayer(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+
 
                 Text(
                     text = song.artistName,
@@ -107,6 +109,7 @@ fun MiniPlayer(
                         modifier = Modifier.size(24.dp)
                     )
                 }
+
 
                 IconButton(
                     onClick = {/**/}

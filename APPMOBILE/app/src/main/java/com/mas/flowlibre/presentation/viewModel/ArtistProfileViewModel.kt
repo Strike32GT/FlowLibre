@@ -12,13 +12,10 @@ import kotlinx.coroutines.launch
 class ArtistProfileViewModel(
     private val repository: ArtistProfileRepository = ArtistProfileRepositoryImpl()
 ): ViewModel() {
-
     private val _artistProfile = MutableStateFlow<ArtistProfileDto?>(null)
     val artistProfile: StateFlow<ArtistProfileDto?> = _artistProfile
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
-
     fun loadArtistProfile(artistId: Int){
         viewModelScope.launch {
             _isLoading.value = true

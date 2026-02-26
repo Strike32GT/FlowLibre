@@ -15,23 +15,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel (private val songRepository: SongRepository = SongRepositoryImpl() ): ViewModel() {
-
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> = _songs
-
     private val _currentSong = MutableStateFlow<Song?>(null)
     val currentSong: StateFlow<Song?> = _currentSong
-
     private var exoPlayer: ExoPlayer? = null
-
-
     private val _currentPosition = MutableStateFlow(0L)
     val currentPosition : StateFlow<Long> = _currentPosition
-
     private val _duration = MutableStateFlow(0L)
     val duration: StateFlow<Long> = _duration
-
-
     private val _isDragging = MutableStateFlow(false)
     val isDragging : StateFlow<Boolean> = _isDragging
 
@@ -42,6 +34,7 @@ class HomeViewModel (private val songRepository: SongRepository = SongRepository
         return String.format("%02d:%02d", minutes, seconds)
     }
 
+
     fun updatePosition() {
         exoPlayer?.let {  player ->
             if (player.duration > 0){
@@ -50,6 +43,7 @@ class HomeViewModel (private val songRepository: SongRepository = SongRepository
             }
         }
     }
+
 
     fun searchPosition(position: Long){
         exoPlayer?.seekTo(position)

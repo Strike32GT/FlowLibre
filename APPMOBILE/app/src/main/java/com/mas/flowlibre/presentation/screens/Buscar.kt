@@ -116,18 +116,10 @@ fun EmptyStateBuscar(
 }
 
 
-
-
-
-
-
-
-
-
-
 @Composable
 fun BuscarArtista(
     navController: NavHostController,
+    homeViewModel: HomeViewModel,
     viewModel: ArtistViewModel = viewModel()
 ) {
     var selectedTab by remember { mutableStateOf(1) }
@@ -215,18 +207,6 @@ fun BuscarArtista(
                 Spacer(modifier = Modifier.height(20.dp))
             }
         }
-
-
-
-        BottomNavigationBarWithNavigation(
-            navController = navController,
-            selectedTab = selectedTab,
-            onTabSelected = { tab -> selectedTab = tab },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 12.dp)
-                .zIndex(3f)
-        )
     }
 }
 

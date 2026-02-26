@@ -29,18 +29,18 @@ import com.mas.flowlibre.presentation.viewModel.*
 @Composable
 fun Home(
     navController: NavHostController,
-    viewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel
 ) {
     val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
-    val songs by viewModel.songs.collectAsState()
-    val currentSong by viewModel.currentSong.collectAsState()
+    val songs by homeViewModel.songs.collectAsState()
+    val currentSong by homeViewModel.currentSong.collectAsState()
     var isPlayerVisible by remember {mutableStateOf(false)}
     var isPlaying by remember {mutableStateOf(false)}
     var isPlayedExpanded by remember { mutableStateOf(false) }
-    val currentPosition by viewModel.currentPosition.collectAsState()
-    val duration by viewModel.duration.collectAsState()
-    val isDragging by viewModel.isDragging.collectAsState()
+    val currentPosition by homeViewModel.currentPosition.collectAsState()
+    val duration by homeViewModel.duration.collectAsState()
+    val isDragging by homeViewModel.isDragging.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
     val snackbarHostState = remember { SnackbarHostState() }
     val libraryViewModel: LibraryViewModel = viewModel()
@@ -135,7 +135,7 @@ fun Home(
                 RecommendedGrid(
                     songs = songs,
                     onSongClick = { song ->
-                        viewModel.playSong(context, song)
+                        homeViewModel.playSong(context, song)
                         isPlayerVisible = true
                         isPlaying = true
                     }
@@ -154,7 +154,7 @@ fun Home(
                 PopularItem(
                     song = song,
                     onClick = {
-                        viewModel.playSong(context,song)
+                        homeViewModel.playSong(context,song)
                         isPlayerVisible = true
                         isPlaying = true
                     }
@@ -174,7 +174,7 @@ fun Home(
                 NewReleaseCarousel(
                     songs = songs,
                     onSongClick = {
-                            song -> viewModel.playSong(context,song)
+                            song -> homeViewModel.playSong(context,song)
                         isPlayerVisible = true
                         isPlaying = true
                     }
@@ -194,17 +194,6 @@ fun Home(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 80.dp)
-        )
-
-
-        BottomNavigationBarWithNavigation(
-            navController = navController,
-            selectedTab = selectedTab,
-            onTabSelected = { tab -> selectedTab = tab },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 12.dp)
-                .zIndex(3f)
         )
 
 
@@ -257,7 +246,7 @@ fun Home(
                             value = if(duration > 0) currentPosition.toFloat() / duration else 0f,
                             onValueChange = { progress ->
                                 val newPosition = (progress * duration).toLong()
-                                viewModel.searchPosition(newPosition)
+                                homeViewModel.searchPosition(newPosition)
                             },
                             onValueChangeFinished = {
 
@@ -278,13 +267,13 @@ fun Home(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         Text(
-                            text = viewModel.formatTime(currentPosition),
+                            text = homeViewModel.formatTime(currentPosition),
                             color = Color.Gray,
                             fontSize = 12.sp
                         )
 
                         Text(
-                            text = viewModel.formatTime(duration),
+                            text = homeViewModel.formatTime(duration),
                             color = Color.Gray,
                             fontSize = 12.sp
                         )
@@ -310,10 +299,10 @@ fun Home(
                         IconButton(
                             onClick = {
                                 if (isPlaying) {
-                                    viewModel.pauseSong()
+                                    homeViewModel.pauseSong()
                                     isPlaying = false
                                 } else {
-                                    viewModel.resumeSong()
+                                    homeViewModel.resumeSong()
                                     isPlaying = true
                                 }
                             }

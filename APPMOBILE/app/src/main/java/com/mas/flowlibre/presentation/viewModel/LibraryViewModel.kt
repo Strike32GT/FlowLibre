@@ -232,9 +232,7 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
                     _createPlaylistState.value = CreatePlaylistState.Error("No autenticado")
                     return@launch
                 }
-
                 val response = RetrofitClient.api.createPlaylist(PlaylistRequest(name))
-
                 if (response.isSuccessful) {
                     _createPlaylistState.value = CreatePlaylistState.Success(response.body()!!)
                     loadUserPlaylists()
@@ -257,11 +255,9 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
                     _addSongToPlaylistState.value = AddSongToPlaylistState.Error("No autenticado")
                     return@launch
                 }
-
                 val response = RetrofitClient.api.addSongToPlaylist(
                     AddSongToPlaylistRequest(playlistId, songId)
                 )
-
                 if (response.isSuccessful) {
                     _addSongToPlaylistState.value = AddSongToPlaylistState.Success
                 } else {
@@ -277,10 +273,8 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
     fun loadPlaylistSongs(playlistId: Int) {
         viewModelScope.launch {
             _loadPlaylistSongsState.value = LoadPlaylistSongsState.Loading
-
             try {
                 val response = RetrofitClient.api.getPlaylistSongs(playlistId)
-
                 if (response.isSuccessful) {
                     val songs = response.body()?.map { songDTO ->
                         Song(
@@ -292,7 +286,6 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
                             duration = songDTO.duration
                         )
                     } ?: emptyList()
-
                     _playlistSongs.value = songs
                     _loadPlaylistSongsState.value = LoadPlaylistSongsState.Success(songs)
                 } else {
@@ -308,12 +301,9 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
     fun getTotalListeningTime(): String {
         val librarySongsDuration = favoriteSongs.value.sumOf { it.duration }
         val playlistSongsDuration = playlistSongs.value.sumOf { it.duration }
-
         val totalSeconds = librarySongsDuration + playlistSongsDuration
-
         val hours = totalSeconds/ 3600
         val minutes = (totalSeconds % 3600) / 60
-
         return when {
             hours > 0 -> "${hours}h ${minutes}min"
             minutes > 0 -> "${minutes}min"
@@ -326,7 +316,6 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             try {
                 if (!sessionManager.isLoggedIn()) return@launch
-
                 val response = RetrofitClient.api.checkSongInPlaylist(playlistId, songId)
                 if (response.isSuccessful) {
                     val exists = response.body()?.get("exists") ?: false
@@ -346,5 +335,4 @@ class LibraryViewModel(application: Application) : AndroidViewModel(application)
         val minutes = (ms / 1000 / 60) % 60
         return String.format("%02d:%02d", minutes, seconds)
     }
-
 }
