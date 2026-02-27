@@ -93,6 +93,14 @@ fun AppNavigation(
                 artistId = artistId
             )
         }
+
+
+        composable("now_playing") {
+            NowPlayingScreen(
+                navController = navController,
+                homeViewModel = homeViewModel
+            )
+        }
     }
 
 

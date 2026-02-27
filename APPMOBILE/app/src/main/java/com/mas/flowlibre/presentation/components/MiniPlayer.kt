@@ -1,5 +1,6 @@
 package com.mas.flowlibre.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.material.icons.*
@@ -7,11 +8,13 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
+import androidx.navigation.*
 import coil3.compose.AsyncImage
 import com.mas.flowlibre.domain.model.Song
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
@@ -20,6 +23,7 @@ import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 fun MiniPlayer(
     song: Song,
     homeViewModel: HomeViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val currentPosition by homeViewModel.currentPosition.collectAsState()
@@ -31,7 +35,10 @@ fun MiniPlayer(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .clickable{
+                navController.navigate("now_playing")
+            },
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E24)),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
