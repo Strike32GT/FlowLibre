@@ -5,21 +5,12 @@ package com.mas.flowlibre.presentation.navigation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
-
 import androidx.compose.ui.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-
 import androidx.lifecycle.viewmodel.compose.viewModel
-
 import androidx.navigation.NavHostController
-
 import androidx.navigation.compose.*
-
 import com.mas.flowlibre.presentation.components.*
-
 import com.mas.flowlibre.presentation.screens.*
-
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 
 
@@ -27,13 +18,22 @@ import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 @Composable
 
 fun AppNavigation(
-
     homeViewModel: HomeViewModel
-
 ) {
     val navController = rememberNavController()
     var selectedTab by remember { mutableStateOf(-1) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
+    LaunchedEffect(currentRoute) {
+        selectedTab = when (currentRoute) {
+            "home" -> 0
+            "buscar" -> 1
+            "biblioteca" -> 2
+            "perfil" -> 3
+            else -> selectedTab
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
