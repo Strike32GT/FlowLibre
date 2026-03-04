@@ -1,5 +1,6 @@
 package com.mas.flowlibre.presentation.screens
 
+import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.mas.flowlibre.data.model.Playlist
 import com.mas.flowlibre.presentation.components.SongList
-import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
 import com.mas.flowlibre.presentation.viewModel.HomeViewModel
 import com.mas.flowlibre.presentation.viewModel.LibraryViewModel
 import com.mas.flowlibre.presentation.viewModel.LoadPlaylistSongsState
@@ -40,14 +39,14 @@ fun Biblioteca(
     var showCreatePlaylistDialog by remember { mutableStateOf(false) }
     var playlistName by remember { mutableStateOf("")}
     val snackbarHostState = remember { SnackbarHostState() }
-    val homeviewmodel : HomeViewModel = viewModel()
+    //val homeviewmodel : HomeViewModel = viewModel()
     val context = LocalContext.current
     val currentLoadState = viewModel.loadPlaylistSongsState.collectAsState().value
     var showPlaylistSongsDialog  by remember { mutableStateOf(false) }
     var selectedPlaylistForSongs by remember { mutableStateOf<Playlist?>(null) }
 
 
-    LaunchedEffect(loadPlaylistSongsState) {
+    /*LaunchedEffect(loadPlaylistSongsState) {
         val state = loadPlaylistSongsState
         when (state) {
             is LoadPlaylistSongsState.Success -> {
@@ -61,7 +60,7 @@ fun Biblioteca(
             else -> {/**/}
         }
 
-    }
+    }*/
 
     LaunchedEffect(Unit) {
         viewModel.loadUserPlaylists()
@@ -180,7 +179,8 @@ fun Biblioteca(
                     UserPlaylistItem(
                         playlist = playlist,
                         libraryViewModel = viewModel,
-                        homeViewModel = homeviewmodel,
+                        homeViewModel = homeViewModel,
+                        context = context,
                         onPlaylistClick = {
                             selectedPlaylistForSongs = playlist
                             showPlaylistSongsDialog = true
@@ -304,7 +304,7 @@ fun Biblioteca(
                         onClick = {
                             val playlistSongs = viewModel.playlistSongs.value
                             if (playlistSongs.isNotEmpty()) {
-                                homeviewmodel.playSong(context, playlistSongs.first())
+                                homeViewModel.playSong(context, playlistSongs.first())
                             }
                             showPlaylistSongsDialog = false
                             selectedPlaylistForSongs = null
@@ -349,6 +349,7 @@ fun UserPlaylistItem(
     playlist: Playlist,
     libraryViewModel: LibraryViewModel,
     homeViewModel: HomeViewModel,
+    context: Context,
     onPlaylistClick: () -> Unit = {}
 ) {
     Card(
@@ -409,6 +410,10 @@ fun UserPlaylistItem(
             IconButton(
                 onClick = {
                     libraryViewModel.loadPlaylistSongs(playlist.id)
+                    val currentSongs = libraryViewModel.playlistSongs.value
+                    if (currentSongs.isNotEmpty()) {
+                        homeViewModel.playSong(context, currentSongs.first())
+                    }
                 }
             ) {
                 Icon(

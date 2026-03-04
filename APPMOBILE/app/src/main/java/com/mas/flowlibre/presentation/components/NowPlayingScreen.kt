@@ -42,7 +42,7 @@ fun NowPlayingScreen(
             onClick = {navController.popBackStack()},
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(16.dp)
+                .padding(48.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Close,

@@ -104,7 +104,7 @@ fun AppNavigation(
     }
 
 
-    if (selectedTab >=0) {
+    if (selectedTab >=0 && currentRoute != "now_playing") {
         BottomNavigationBarWithNavigation(
             navController = navController,
             selectedTab = selectedTab,

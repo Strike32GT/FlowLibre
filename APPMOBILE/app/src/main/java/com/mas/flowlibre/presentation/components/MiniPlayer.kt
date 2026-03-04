@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -63,22 +64,55 @@ fun MiniPlayer(
 
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = song.title,
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = song.title,
+                            color = Color.White,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
 
 
-                Text(
-                    text = song.artistName,
-                    color = Color(0xFFA9A9B2),
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                        Text(
+                            text = song.artistName,
+                            color = Color(0xFFA9A9B2),
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {/**/}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Like",
+                            tint = Color(0xFF6FE4FF),
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+
+
+                    IconButton(
+                        onClick = {/**/}
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Agregar",
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
 
 
                 LinearProgressIndicator(
@@ -113,18 +147,6 @@ fun MiniPlayer(
                         imageVector = if (isPlaying)Icons.Default.Pause else Icons.Default.PlayArrow,
                         contentDescription = null,
                         tint = Color(0xFF6FE4FF),
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
-
-                IconButton(
-                    onClick = {/**/}
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Agregar a playlist",
-                        tint = Color.White,
                         modifier = Modifier.size(24.dp)
                     )
                 }
