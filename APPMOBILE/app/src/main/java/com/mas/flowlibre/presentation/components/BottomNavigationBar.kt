@@ -1,6 +1,6 @@
 package com.mas.flowlibre.presentation.components
 
-import androidx.compose.foundation.clickable
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.material.icons.Icons
@@ -8,9 +8,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -24,6 +23,20 @@ fun BottomNavigationBar(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val message by homeViewModel.message.collectAsState()
+
+
+    LaunchedEffect(message) {
+        message?.let { msg ->
+            if (msg.isNotBlank()) {
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                homeViewModel.clearMessage()
+            }
+        }
+    }
+
+
     Box(modifier = modifier) {
         val currentSong by homeViewModel.currentSong.collectAsState()
         if (currentSong != null) {
@@ -38,11 +51,19 @@ fun BottomNavigationBar(
                     .zIndex(10f)
             )
         }
+
+
+        AddToPlaylistDialog(
+            homeViewModel = homeViewModel,
+            onDismiss = { homeViewModel.hideAddToPlaylistDialog() }
+        )
+
+
         Card(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 8.dp),
+                .padding(bottom = 4.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E24)),
             shape = RoundedCornerShape(20.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)

@@ -56,6 +56,11 @@ dependencies {
     implementation("io.coil-kt.coil3:coil:3.2.0")
     implementation("io.coil-kt.coil3:coil-compose:3.2.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.2.0")
+    //Para el miracast
+    /*Notifiacion y Multimedia*/
+    implementation("androidx.media:media:1.7.0")
+    implementation("androidx.media3:media3-session:1.8.0")
+    //
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

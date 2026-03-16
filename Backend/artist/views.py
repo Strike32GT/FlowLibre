@@ -1,15 +1,11 @@
 from rest_framework.views import APIView
-
 from rest_framework.response import Response
-
 from django.db.models import Q
-
 from .models import Artist
-
 from .serializers import ArtistSerializer
-
+from songs.models import Song
 from songs.serializers import SongSerializer
-
+from albums.models import Album
 from albums.serializers import AlbumSerializer
 
 

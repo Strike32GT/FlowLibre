@@ -1,30 +1,31 @@
 package com.mas.flowlibre.presentation.screens
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.Label
 import androidx.navigation.NavHostController
-import com.mas.flowlibre.data.model.UserDto
-import com.mas.flowlibre.presentation.navigation.BottomNavigationBarWithNavigation
-import com.mas.flowlibre.presentation.viewModel.HomeViewModel
-import com.mas.flowlibre.presentation.viewModel.ProfileViewModel
+import com.mas.flowlibre.data.model.*
+import com.mas.flowlibre.presentation.viewModel.*
 
 
 @Composable
@@ -72,20 +73,15 @@ fun Perfil(
 
 
             item {
-                SectionTitlePerfil(
-                    icon = Icons.Default.QueueMusic,
-                    title = "PlayList"
-                )
-            }
+                LaunchedEffect(Unit) {
+                    homeViewModel.loadUserStats()
+                }
 
 
-            item {
-                EmptyState(
-                    icon = Icons.Default.QueueMusic,
-                    title = "No hay playlist disposnibles",
-                    description = "Tus playlists aparecerán aquí cuando estén disponibles"
-                )
+                val userStats by homeViewModel.userStats.collectAsState()
+                UserStatsSection(userStats)
             }
+
 
             item {
                 ProfileOptions(
@@ -99,10 +95,9 @@ fun Perfil(
             }
 
             item {
-
                 Spacer(modifier = Modifier.height(20.dp))
-
             }
+
 
         }
     }
@@ -261,7 +256,7 @@ fun ProfileOptions(
         ) {
             Row(
                 modifier = Modifier
-                    .clickable{ onLogout() }
+                    .clickable { onLogout() }
                     .padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -283,5 +278,104 @@ fun ProfileOptions(
                 )
             }
         }
+    }
+}
+
+
+@Composable
+fun UserStatsSection(userStats: UserStatsDto) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E24)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp,vertical = 32.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                StartItem(
+                    icon = Icons.Default.MusicNote,
+                    value = userStats.songs_listened.toString(),
+                    label = "Canciones escuchadas"
+                )
+
+
+                StartItem(
+                    icon = Icons.Default.Person,
+                    value = userStats.artist_followed.toString(),
+                    label = "Artistas seguidos"
+                )
+
+                StartItem(
+                    icon = Icons.Default.PlaylistAdd,
+                    value = userStats.total_playlist_created.toString(),
+                    label = "Playlists creadas"
+                )
+            }
+    }
+}
+
+
+@Composable
+fun StartItem(
+    icon: ImageVector,
+    value: String,
+    label: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = Color(0xFF6FE4FF),
+            modifier = Modifier.size(32.dp)
+        )
+
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+
+        Text(
+            text = value,
+            color = Color(0xFF6FE4FF),
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            )
+        )
+
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        val words = label.split(" ")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = words.firstOrNull() ?: "",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+
+
+            Text(
+                text = words.getOrNull(1) ?: "",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+
     }
 }

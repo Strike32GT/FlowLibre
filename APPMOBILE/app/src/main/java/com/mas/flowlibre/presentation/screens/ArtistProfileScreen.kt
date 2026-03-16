@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,11 +42,36 @@ fun ArtistProfileScreen(
                 modifier = Modifier.align(Alignment.Center),
                 color = Color(0xFF6FE4FF)
             )
+        } else if (artistProfile == null) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    tint = Color(0xFF6FE4FF),
+                    modifier = Modifier.size(64.dp)
+                )
+
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
+                Text(
+                    text = "Intentalo de nuevo mas tarde",
+                    color = Color(0xFFA9A9B2),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         } else {
             artistProfile?.let { profile ->
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    item {
+                        Spacer(modifier = Modifier.height(60.dp))
+                    }
                     item {
                         ArtistHeader(artist = profile.artist)
                     }

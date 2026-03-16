@@ -8,10 +8,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavController
@@ -23,14 +22,11 @@ fun NowPlayingScreen(
     navController: NavController,
     homeViewModel: HomeViewModel
 ) {
+    val context = LocalContext.current
     val currentSong by homeViewModel.currentSong.collectAsState()
     val currentPosition by homeViewModel.currentPosition.collectAsState()
     val duration by homeViewModel.duration.collectAsState()
-    var isPlaying by remember { mutableStateOf(false) }
-
-    LaunchedEffect(currentSong) {
-        isPlaying = currentSong != null
-    }
+    val isPlaying by homeViewModel.isPlaying.collectAsState()
 
 
     Box(
@@ -144,7 +140,9 @@ fun NowPlayingScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = {/**/}) {
+                    IconButton(onClick = {
+                        homeViewModel.playPreviousSong(context)
+                    }) {
                         Icon(
                             imageVector = Icons.Default.SkipPrevious,
                             contentDescription = "Anterior",
@@ -158,10 +156,8 @@ fun NowPlayingScreen(
                         onClick = {
                             if (isPlaying) {
                                 homeViewModel.pauseSong()
-                                isPlaying = false
                             } else {
                                 homeViewModel.resumeSong()
-                                isPlaying = true
                             }
                         }
                     ) {
@@ -175,7 +171,9 @@ fun NowPlayingScreen(
 
 
                     IconButton(
-                        onClick = {/**/}
+                        onClick = {
+                            homeViewModel.playNextSong(context)
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.SkipNext,

@@ -31,7 +31,7 @@ interface ApiService {
 
 
     @GET("api/artists/{artist_id}/")
-    suspend fun getArtistDetail(@Path("artist_id") artistId: Int): ArtistProfileDto
+    suspend fun getArtistDetail(@Path("artist_id") artistId: Int): Response<ArtistProfileDto>
 
 
     @POST("api/users/login/")
@@ -67,4 +67,7 @@ interface ApiService {
         @Path("playlist_id") playlistId: Int,
         @Path("song_id") songId: Int
     ): Response<Map<String, Boolean>>
+
+    @GET("api/users/stats/")
+    suspend fun getUserStats(): Response<UserStatsDto>
 }

@@ -24,7 +24,10 @@ fun AlbumItem(album: AlbumDto) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(140.dp),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                onError = { error ->
+                    println("DEBUG: Error de imagen de album ${error.result}")
+                }
             )
 
 
